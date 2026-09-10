@@ -576,7 +576,7 @@ func builtinDashboard(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("|                       BUSH DASHBOARD                        |", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("|              FOR BUSH LOVERS, BY BUSH LOVERS                |", color.Mauve))
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("+-------------------------------------------------------------+", color.Lavender))
-	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Shell Version", color.PastelPeach), color.Colorize("Bush v2.1.1 release (Go "+runtime.Version()+")", color.TextWhite))
+	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Shell Version", color.PastelPeach), color.Colorize("Bush v2.1.2 release (Go "+runtime.Version()+")", color.TextWhite))
 	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Uptime", color.PastelPeach), color.Colorize(uptime.String(), color.PastelMint))
 	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Commands Executed", color.PastelPeach), color.Colorize(strconv.Itoa(ctx.CommandCount), color.PastelYellow))
 	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Memory Allocated", color.PastelPeach), color.Colorize(formatBytes(int64(m.Alloc)), color.PastelMint))
