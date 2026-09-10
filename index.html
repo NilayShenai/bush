@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bush - A shell for people of refined taste</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+    :root {
+      --bg: #11111b;
+      --card-bg: #181825;
+      --card-hover: #1e1e2e;
+      --border: #313244;
+      --border-focus: #585b70;
+      --text: #cdd6f4;
+      --text-muted: #9399b2;
+      --text-dim: #6c7086;
+
+      --lavender: #b4befe;
+      --mauve: #cba6f7;
+      --pink: #f5c2e7;
+      --peach: #fab387;
+      --yellow: #f9e2af;
+      --mint: #94e2d5;
+      --green: #a6e3a1;
+      --red: #f38ba8;
+    }
+
+    /* Custom Selection Colors */
+    ::selection {
+      background: var(--pink);
+      color: #11111b;
+    }
+    ::-moz-selection {
+      background: var(--pink);
+      color: #11111b;
+    }
+    h1::selection, h2::selection, h3::selection {
+      background: var(--peach);
+      color: #11111b;
+    }
+    code::selection, pre::selection {
+      background: var(--mint);
+      color: #11111b;
+    }
+
+    /* Custom Dark Mode Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+      border: 1px solid var(--bg);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #45475a;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) var(--bg);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      line-height: 1.6;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 5rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem;
+    }
+
+    /* Header & Branding */
+    header {
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge-bush {
+      background-color: #313244;
+      color: var(--lavender);
+    }
+
+    .badge-tag {
+      background-color: rgba(180, 190, 254, 0.1);
+      border: 1px solid rgba(180, 190, 254, 0.3);
+      color: var(--lavender);
+    }
+
+    .badge-status {
+      background-color: rgba(166, 227, 161, 0.15);
+      border: 1px solid rgba(166, 227, 161, 0.3);
+      color: var(--green);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--lavender);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
+    }
+
+    .motto {
+      color: var(--pink);
+      font-style: italic;
+      font-size: 14px;
+      margin-bottom: 1rem;
+    }
+
+    .description {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      max-width: 720px;
+    }
+
+    /* Hero Preview Media */
+    .preview-wrapper {
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .preview-header {
+      background: #181825;
+      padding: 0.5rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .preview-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .preview-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .preview-image {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    /* Navigation Bar */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(17, 17, 27, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      margin: 0 -1.25rem 2.5rem -1.25rem;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 12px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    nav a:hover {
+      color: var(--lavender);
+    }
+
+    /* Section Styling */
+    section {
+      margin-bottom: 3.5rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--peach);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2::before {
+      content: "##";
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      color: var(--lavender);
+      margin: 1.4rem 0 0.6rem 0;
+    }
+
+    p {
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-size: 13.5px;
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 680px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1.2rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-focus);
+      background: var(--card-hover);
+    }
+
+    .card-title {
+      color: var(--mint);
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-cmd {
+      color: var(--yellow);
+      font-size: 11.5px;
+      background: #11111b;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: #161622;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 12.5px;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    code {
+      font-family: 'Space Mono', monospace;
+      font-size: 12.5px;
+      color: var(--mint);
+    }
+
+    p code, li code, td code {
+      background: #181825;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--mint);
+    }
+
+    /* Copy Button */
+    .code-block {
+      position: relative;
+      margin: 1rem 0;
+    }
+
+    .code-block pre {
+      margin: 0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #242436;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 10.5px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--lavender);
+      border-color: var(--lavender);
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12.5px;
+    }
+
+    th {
+      background: #161622;
+      color: var(--peach);
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid #232334;
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(180, 190, 254, 0.02);
+    }
+
+    /* Search Filter Box */
+    .search-box {
+      width: 100%;
+      background: #181825;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.65rem 0.9rem;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      margin-bottom: 1.5rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-box:focus {
+      border-color: var(--lavender);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px dashed var(--border);
+      padding-top: 2rem;
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (min-width: 600px) {
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    footer a {
+      color: var(--lavender);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="badge-bar">
+      <span class="badge badge-bush">bush v2.1.1</span>
+      <span class="badge badge-tag">Go POSIX</span>
+      <span class="badge badge-status">zero dependencies</span>
+    </div>
+    <h1>bush</h1>
+    <div class="motto">"A shell for people of refined taste."</div>
+    <div class="description">
+      A fast, native Unix shell built in Go with integrated developer tooling, frecency jumping, command blast-radius safety, live output diffing, zero runtime dependencies, and truecolor pastel aesthetics.
+    </div>
+  </header>
+
+  <!-- Interactive Navigation -->
+  <nav>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#features">Features</a>
+    <a href="#guard">Safety Guard</a>
+    <a href="#frecency">Frecency (z)</a>
+    <a href="#ports">Port Doctor</a>
+    <a href="#config">Config</a>
+    <a href="#keybindings">Keybindings</a>
+    <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+
+  <!-- Terminal Preview Frame -->
+  <div class="preview-wrapper">
+    <div class="preview-header">
+      <div class="preview-dots">
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+        <span class="preview-dot"></span>
+      </div>
+      <span>bush - session preview</span>
+      <span>2.1.1 release</span>
+    </div>
+    <img src="../assets/preview.png" alt="Bush Shell Session Preview" class="preview-image" onerror="this.src='assets/preview.png'">
+  </div>
+
+  <!-- Quickstart -->
+  <section id="quickstart">
+    <h2>Quickstart</h2>
+    <p>Bush compiles directly into a standalone, single-binary executable with zero Cgo and zero runtime dependencies:</p>
+
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code># Clone and build
+git clone https://github.com/NilayShenai/bush.git
+cd bush
+go build -ldflags="-s -w" -o bush main.go
+
+# Run directly
+./bush
+
+# (Optional) Install system-wide
+sudo cp bush /usr/local/bin/bush
+sudo chmod 755 /usr/local/bin/bush</code></pre>
+    </div>
+
+    <h3>Set as Primary Login Shell</h3>
+    <p>Bush fully conforms to standard POSIX login shell specifications (<code>-l</code>, <code>-i</code>, <code>-s</code>, <code>-c</code>):</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code>echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+chsh -s /usr/local/bin/bush
+su - $USER</code></pre>
+    </div>
+  </section>
+
+  <!-- Searchable Features Grid -->
+  <section id="features">
+    <h2>Developer Tooling Suite</h2>
+    <p>Filter or search commands below:</p>
+
+    <input type="text" class="search-box" id="cmdSearch" placeholder="Filter commands (e.g. z, port, guard, memo, watch)..." onkeyup="filterCards()">
+
+    <div class="grid" id="cardsGrid">
+
+      <div class="card" data-cmd="z jump frecency directory">
+        <div class="card-title">
+          <span>Frecency Jump</span>
+          <span class="card-cmd">z &lt;query&gt;</span>
+        </div>
+        <div class="card-desc">
+          Teleports to frequent and recent directories using an internal frequency-recency algorithm. Persists in <code>~/.bush_frecency</code> without external tools.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="guard blast radius safety rm rf">
+        <div class="card-title">
+          <span>Blast Radius Guard</span>
+          <span class="card-cmd">[guard]</span>
+        </div>
+        <div class="card-desc">
+          Heuristic interceptor for destructive commands (<code>rm -rf *</code>, <code>git reset --hard</code>, <code>git push -f</code>, <code>dd</code>). Calculates affected file count and requires confirmation.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="port killport inspect process network">
+        <div class="card-title">
+          <span>Port Doctor &amp; Killer</span>
+          <span class="card-cmd">port / killport</span>
+        </div>
+        <div class="card-desc">
+          Inspects listening processes on ports (PID, path, protocol) and terminates them to resolve <code>EADDRINUSE</code> in a single command.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="watch timer diff highlight changes">
+        <div class="card-title">
+          <span>Live Differential Watcher</span>
+          <span class="card-cmd">watch [int] &lt;cmd&gt;</span>
+        </div>
+        <div class="card-desc">
+          Runs commands on an interval with real-time pastel diff highlighting of changed lines. Press <code>q</code> to return to shell.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="envload dotenv env secrets environment">
+        <div class="card-title">
+          <span>Environment Loader</span>
+          <span class="card-cmd">envload [file]</span>
+        </div>
+        <div class="card-desc">
+          Safely loads <code>.env</code> files directly into session environment with automatic masking of sensitive keys (tokens, secrets, keys).
+        </div>
+      </div>
+
+      <div class="card" data-cmd="memo cache replay stdout buffer">
+        <div class="card-title">
+          <span>Output Memoizer</span>
+          <span class="card-cmd">memo &lt;cmd&gt;</span>
+        </div>
+        <div class="card-desc">
+          Caches command stdout in memory. Replay instantly using <code>memo</code> or <code>memo | grep ...</code> without re-running slow queries.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="g git hud status commit branch">
+        <div class="card-title">
+          <span>Compact Git HUD</span>
+          <span class="card-cmd">g [args...]</span>
+        </div>
+        <div class="card-desc">
+          Run alone to print a 3-line status card (branch, ahead/behind, staged/dirty, latest commit). Run with arguments to pass directly to git.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="why doctor exit code error diagnose">
+        <div class="card-title">
+          <span>Command Doctor</span>
+          <span class="card-cmd">why</span>
+        </div>
+        <div class="card-desc">
+          Diagnoses the root cause of the previous non-zero exit code, evaluating typo suggestions and missing child process interpreters.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="peek stream monitor pipeline throughput">
+        <div class="card-title">
+          <span>Stream Inspector</span>
+          <span class="card-cmd">peek [file]</span>
+        </div>
+        <div class="card-desc">
+          Monitors pipeline data streams non-intrusively, reporting byte rates, line counters, and mime format on stderr while passing bytes cleanly.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="mark jump bookmarks directory teleport">
+        <div class="card-title">
+          <span>Directory Bookmarks</span>
+          <span class="card-cmd">mark / jump</span>
+        </div>
+        <div class="card-desc">
+          Save current directory as a persistent named bookmark (<code>mark api</code>) and teleport to it from anywhere (<code>jump api</code>).
+        </div>
+      </div>
+
+      <div class="card" data-cmd="calc math expression calculate">
+        <div class="card-title">
+          <span>Inline Math Evaluator</span>
+          <span class="card-cmd">calc &lt;expr&gt;</span>
+        </div>
+        <div class="card-desc">
+          Recursive-descent math parser supporting operator precedence, scientific functions, and powers without external calculators.
+        </div>
+      </div>
+
+      <div class="card" data-cmd="dashboard stats telemetry uptime memory">
+        <div class="card-title">
+          <span>Session Telemetry</span>
+          <span class="card-cmd">dashboard</span>
+        </div>
+        <div class="card-desc">
+          Pastel session HUD showing shell uptime, resident memory, command frequency, and repository context.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Deep Dive: Blast Radius Guard -->
+  <section id="guard">
+    <h2>Blast Radius Guard Heuristics</h2>
+    <p>When running destructive operations, Bush evaluates the target paths and file counts against the safety threshold:</p>
+
+    <div class="code-block">
+      <pre><code>+--- [!] Blast Radius Guard -------------------------------+
+| Command:  rm -rf *
+| Reason:   Target is root, wildcard, or home directory
+| Affected: 38 files
+| Target:   *
++----------------------------------------------------------+
+Type 'yes' or press Enter to proceed, or 'no'/Esc to cancel:</code></pre>
+    </div>
+    <p>Intercepted commands include <code>rm -rf</code> on broad targets, <code>git reset --hard</code>, <code>git push --force</code>, <code>dd of=/dev/sd*</code>, and <code>chmod -R 777 /</code>.</p>
+  </section>
+
+  <!-- Deep Dive: Frecency Jump -->
+  <section id="frecency">
+    <h2>Native Frecency Algorithm (z)</h2>
+    <p>Bush automatically calculates a weighted score for visited directories based on frequency and elapsed time:</p>
+    <p><code>Score = Visits * Weight(TimeSinceVisit)</code></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code># Teleport to matching directory
+z doc           # Jumps to ~/Documents/GooShell
+z api           # Jumps to /var/www/my-project/api
+
+# Display top 10 frecent directories with scores
+z
+
+# Clear frecency database
+z --clear</code></pre>
+    </div>
+  </section>
+
+  <!-- Deep Dive: Port Doctor -->
+  <section id="ports">
+    <h2>Port Doctor &amp; Terminator</h2>
+    <p>Inspect and release local ports without piping <code>lsof</code> or <code>netstat</code>:</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code># Inspect port 3000
+port 3000
+# Output: PID, Process Name, Executable, Listening Address
+
+# Kill process listening on port 3000
+killport 3000
+# Gracefully signals SIGTERM, followed by SIGKILL if needed</code></pre>
+    </div>
+  </section>
+
+  <!-- Configuration -->
+  <section id="config">
+    <h2>Configuration Reference</h2>
+    <p>Configured declaratively in <code>~/.config/bush/config.toml</code> (or fallback <code>~/.bush.toml</code>):</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code>[shell]
+greeting_banner = true
+motto = "A shell for people of refined taste."
+history_limit = 5000
+
+[guard]
+enabled = true
+file_threshold = 10
+
+[prompt]
+multiline = true
+symbol = "❯ "
+badges = ["badge", "user", "dir", "git", "duration", "status"]
+max_dir_depth = 4
+duration_threshold_ms = 5
+show_git = true
+show_git_dirty = true
+
+[theme]
+name = "lavender" # "lavender", "nord", "tokyo_night", "rose_pine", "custom"
+
+[autosuggest]
+enabled = true
+suggest_history = true
+suggest_subcommands = true
+suggest_files = true
+suggest_binaries = true
+
+[aliases]
+ll = "ls -la --color=auto"
+gs = "git status"
+gp = "git pull"</code></pre>
+    </div>
+  </section>
+
+  <!-- Keybindings Table -->
+  <section id="keybindings">
+    <h2>Keyboard Navigation</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Keybinding</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Tab</code></td>
+            <td>Accept full smart prediction or trigger context-aware completion</td>
+          </tr>
+          <tr>
+            <td><code>Right Arrow</code></td>
+            <td>Accept inline ghost suggestion</td>
+          </tr>
+          <tr>
+            <td><code>Alt + Right</code></td>
+            <td>Accept next word of suggestion</td>
+          </tr>
+          <tr>
+            <td><code>Up / Down</code></td>
+            <td>Browse history with prefix filtering</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + R / Ctrl + P</code></td>
+            <td>Interactive fuzzy history search popup</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + A / Ctrl + E</code></td>
+            <td>Move cursor to beginning / end of line</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + U / Ctrl + K</code></td>
+            <td>Kill line to start / end</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + W</code></td>
+            <td>Delete previous word</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + L</code></td>
+            <td>Clear screen and redraw prompt</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + C</code></td>
+            <td>Cancel current line input</td>
+          </tr>
+          <tr>
+            <td><code>Ctrl + D</code></td>
+            <td>Exit shell (on empty line buffer)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div>bush - released under the MIT License</div>
+    <div>
+      <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">github.com/NilayShenai/bush</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  function filterCards() {
+    const input = document.getElementById('cmdSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      const match = card.getAttribute('data-cmd') + ' ' + card.innerText.toLowerCase();
+      if (match.includes(input)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function copyCode(button) {
+    const pre = button.parentElement.querySelector('pre');
+    const code = pre.innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      const original = button.innerText;
+      button.innerText = 'copied!';
+      button.style.color = 'var(--green)';
+      button.style.borderColor = 'var(--green)';
+      setTimeout(() => {
+        button.innerText = original;
+        button.style.color = '';
+        button.style.borderColor = '';
+      }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
