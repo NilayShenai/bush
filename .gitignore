@@ -1,0 +1,11 @@
+# Binaries
+bush
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS and logs
+*.log
+.DS_Store
