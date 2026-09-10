@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -424,10 +425,16 @@ func builtinAbout(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("+-----------------------------------------------------------+", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, "  "+color.BoldColorize("\"A shell for people of refined taste.\"", color.PastelPink))
 	fmt.Fprintln(ctx.Stdout)
-	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      2.1.2 release", color.PastelMint))
-	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Engine:       Go POSIX", color.TextWhite))
+
+	engineStr := "Go POSIX"
+	if runtime.GOOS == "darwin" {
+		engineStr = "Go POSIX (macOS Darwin " + runtime.GOARCH + ")"
+	}
+
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      2.1.2-mcbush (macOS edition)", color.PastelMint))
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Engine:       "+engineStr, color.TextWhite))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Theme:        default", color.Lavender))
-	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Source:       https://github.com/NilayShenai/bush", color.PastelPeach))
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Source:       https://github.com/NilayShenai/bush (branch: McBush)", color.PastelPeach))
 	fmt.Fprintln(ctx.Stdout)
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Crafted for anyone who appreciates high performance, endless customizability,", color.TextWhite))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("peak Unix shellcraft, and ", color.TextWhite)+

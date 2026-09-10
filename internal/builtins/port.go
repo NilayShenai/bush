@@ -22,7 +22,11 @@ type PortInfo struct {
 }
 
 func findProcessOnPort(port int) (*PortInfo, error) {
-	out, err := exec.Command("lsof", "-i", fmt.Sprintf(":%d", port), "-sTCP:LISTEN", "-t").Output()
+	// 1. Try lsof (standard on macOS, also works on Linux if installed)
+	out, err := exec.Command("lsof", "-nP", fmt.Sprintf("-iTCP:%d", port), "-sTCP:LISTEN", "-t").Output()
+	if err != nil || len(out) == 0 {
+		out, err = exec.Command("lsof", "-i", fmt.Sprintf(":%d", port), "-sTCP:LISTEN", "-t").Output()
+	}
 	if err == nil && len(out) > 0 {
 		pidStr := strings.TrimSpace(strings.Split(string(out), "\n")[0])
 		if pid, err := strconv.Atoi(pidStr); err == nil && pid > 0 {
@@ -30,6 +34,7 @@ func findProcessOnPort(port int) (*PortInfo, error) {
 		}
 	}
 
+	// 2. Try ss on Linux
 	ssOut, err := exec.Command("ss", "-tulpn").Output()
 	if err == nil {
 		lines := strings.Split(string(ssOut), "\n")
@@ -43,6 +48,25 @@ func findProcessOnPort(port int) (*PortInfo, error) {
 				pid := extractPIDFromSS(line)
 				if pid > 0 {
 					return getPortInfoForPID(port, proto, pid), nil
+				}
+				return resolveKnownServiceOrProc(port, proto), nil
+			}
+		}
+	}
+
+	// 3. Try netstat (macOS and Unix)
+	netstatOut, err := exec.Command("netstat", "-anv").Output()
+	if err == nil {
+		lines := strings.Split(string(netstatOut), "\n")
+		portPattern := fmt.Sprintf(".%d ", port)
+		for _, line := range lines {
+			if (strings.Contains(line, portPattern) || strings.Contains(line, fmt.Sprintf(":%d ", port))) && strings.Contains(line, "LISTEN") {
+				proto := "TCP"
+				fields := strings.Fields(line)
+				if len(fields) > 8 {
+					if pid, err := strconv.Atoi(fields[len(fields)-1]); err == nil && pid > 0 {
+						return getPortInfoForPID(port, proto, pid), nil
+					}
 				}
 				return resolveKnownServiceOrProc(port, proto), nil
 			}
@@ -181,6 +205,23 @@ func getPortInfoForPID(port int, proto string, pid int) *PortInfo {
 		}
 	}
 
+	// Fallback for macOS Darwin or systems without /proc: use ps
+	if info.Process == "unknown" || info.Process == "" {
+		if psOut, err := exec.Command("ps", "-p", strconv.Itoa(pid), "-o", "comm=").Output(); err == nil {
+			name := strings.TrimSpace(string(psOut))
+			if name != "" {
+				tokens := strings.Split(name, "/")
+				info.Process = tokens[len(tokens)-1]
+			}
+		}
+		if psArgs, err := exec.Command("ps", "-p", strconv.Itoa(pid), "-o", "args=").Output(); err == nil {
+			cmd := strings.TrimSpace(string(psArgs))
+			if cmd != "" {
+				info.Cmdline = cmd
+			}
+		}
+	}
+
 	return info
 }
 
@@ -189,76 +230,122 @@ func builtinPort(args []string, ctx *ShellContext) int {
 
 	if len(args) == 1 {
 		out, err := exec.Command("ss", "-tulpn", "-H").Output()
-		if err != nil {
-			fmt.Fprintf(ctx.Stderr, "bush: port: %v\n", err)
-			return 1
-		}
+		if err == nil && len(out) > 0 {
+			// Linux ss rendering
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+--- Active Listening Ports -------------------------------+", pal.Accent))
+			fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-12s %s\n", "PROTO", "LOCAL ADDRESS", "PID", "PROCESS")
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
 
-		fmt.Fprintln(ctx.Stdout, color.BoldColorize("+--- Active Listening Ports -------------------------------+", pal.Accent))
-		fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-12s %s\n", "PROTO", "LOCAL ADDRESS", "PID", "PROCESS")
-		fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
-
-		lines := strings.Split(strings.TrimSpace(string(out)), "\n")
-		count := 0
-		for _, line := range lines {
-			fields := strings.Fields(line)
-			if len(fields) >= 5 {
-				proto := fields[0]
-				addr := fields[4]
-				proc := ""
-				if len(fields) >= 7 {
-					proc = fields[6]
-				}
-
-				cleanProc := proc
-				pidStr := ""
-				if strings.Contains(proc, "users:((") {
-					start := strings.Index(proc, "((\"")
-					if start != -1 {
-						rest := proc[start+3:]
-						end := strings.Index(rest, "\"")
-						if end != -1 {
-							cleanProc = rest[:end]
-						}
+			lines := strings.Split(strings.TrimSpace(string(out)), "\n")
+			count := 0
+			for _, line := range lines {
+				fields := strings.Fields(line)
+				if len(fields) >= 5 {
+					proto := fields[0]
+					addr := fields[4]
+					proc := ""
+					if len(fields) >= 7 {
+						proc = fields[6]
 					}
-					if pidIdx := strings.Index(proc, "pid="); pidIdx != -1 {
-						rest := proc[pidIdx+4:]
-						end := strings.IndexAny(rest, ",)")
-						if end != -1 {
-							pidStr = rest[:end]
-						}
-					}
-				}
 
-				if cleanProc == "" || cleanProc == "system/unknown" {
-					lastColon := strings.LastIndex(addr, ":")
-					if lastColon != -1 {
-						if pNum, err := strconv.Atoi(addr[lastColon+1:]); err == nil {
-							resolved := resolveKnownServiceOrProc(pNum, proto)
-							cleanProc = resolved.Process
-							if resolved.PID > 0 {
-								pidStr = strconv.Itoa(resolved.PID)
+					cleanProc := proc
+					pidStr := ""
+					if strings.Contains(proc, "users:((") {
+						start := strings.Index(proc, "((\"")
+						if start != -1 {
+							rest := proc[start+3:]
+							end := strings.Index(rest, "\"")
+							if end != -1 {
+								cleanProc = rest[:end]
+							}
+						}
+						if pidIdx := strings.Index(proc, "pid="); pidIdx != -1 {
+							rest := proc[pidIdx+4:]
+							end := strings.IndexAny(rest, ",)")
+							if end != -1 {
+								pidStr = rest[:end]
 							}
 						}
 					}
-				}
 
-				fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-10s %s\n",
-					color.Colorize(proto, pal.PromptSymbol),
-					color.Colorize(addr, pal.Directory),
-					color.Colorize(pidStr, pal.Flags),
-					color.Colorize(cleanProc, pal.Flags),
-				)
-				count++
+					if cleanProc == "" || cleanProc == "system/unknown" {
+						lastColon := strings.LastIndex(addr, ":")
+						if lastColon != -1 {
+							if pNum, err := strconv.Atoi(addr[lastColon+1:]); err == nil {
+								resolved := resolveKnownServiceOrProc(pNum, proto)
+								cleanProc = resolved.Process
+								if resolved.PID > 0 {
+									pidStr = strconv.Itoa(resolved.PID)
+								}
+							}
+						}
+					}
+
+					fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-10s %s\n",
+						color.Colorize(proto, pal.PromptSymbol),
+						color.Colorize(addr, pal.Directory),
+						color.Colorize(pidStr, pal.Flags),
+						color.Colorize(cleanProc, pal.Flags),
+					)
+					count++
+				}
 			}
+			if count == 0 {
+				fmt.Fprintln(ctx.Stdout, "| No active listening ports detected.")
+			}
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
+			fmt.Fprintln(ctx.Stdout, color.Colorize("Usage: port <number> to inspect, killport <number> to kill", pal.GhostText))
+			return 0
 		}
-		if count == 0 {
-			fmt.Fprintln(ctx.Stdout, "| No active listening ports detected.")
+
+		// macOS fallback using lsof -iTCP -sTCP:LISTEN -nP
+		lsofOut, lsofErr := exec.Command("lsof", "-iTCP", "-sTCP:LISTEN", "-nP").Output()
+		if lsofErr == nil && len(lsofOut) > 0 {
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+--- Active Listening Ports -------------------------------+", pal.Accent))
+			fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-12s %s\n", "PROTO", "LOCAL ADDRESS", "PID", "PROCESS")
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
+
+			lines := strings.Split(strings.TrimSpace(string(lsofOut)), "\n")
+			count := 0
+			seen := make(map[string]bool)
+			for i, line := range lines {
+				if i == 0 {
+					continue
+				}
+				fields := strings.Fields(line)
+				if len(fields) >= 9 {
+					proc := fields[0]
+					pidStr := fields[1]
+					proto := "tcp"
+					addr := fields[8]
+
+					key := addr + "/" + proto
+					if seen[key] {
+						continue
+					}
+					seen[key] = true
+
+					fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-10s %s\n",
+						color.Colorize(proto, pal.PromptSymbol),
+						color.Colorize(addr, pal.Directory),
+						color.Colorize(pidStr, pal.Flags),
+						color.Colorize(proc, pal.Flags),
+					)
+					count++
+				}
+			}
+			if count == 0 {
+				fmt.Fprintln(ctx.Stdout, "| No active listening ports detected.")
+			}
+			fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
+			fmt.Fprintln(ctx.Stdout, color.Colorize("Usage: port <number> to inspect, killport <number> to kill", pal.GhostText))
+			return 0
 		}
-		fmt.Fprintln(ctx.Stdout, color.BoldColorize("+----------------------------------------------------------+", pal.Accent))
-		fmt.Fprintln(ctx.Stdout, color.Colorize("Usage: port <number> to inspect, killport <number> to kill", pal.GhostText))
-		return 0
+
+		fmt.Fprintf(ctx.Stderr, "bush: port: %v\n", err)
+		return 1
 	}
+
 
 	portNum, err := strconv.Atoi(args[1])
 	if err != nil || portNum <= 0 || portNum > 65535 {

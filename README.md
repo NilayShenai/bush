@@ -41,22 +41,37 @@ Bush implements these capabilities directly inside the shell engine:
 ### Prerequisites
 
 - Go 1.19 or higher
-- Linux or Unix-like environment
+- macOS (Apple Silicon `arm64` or Intel `amd64`) or Linux / BSD
 
-### Build from Source
+### Build from Source (macOS & Linux)
 
 ```bash
-git clone https://github.com/NilayShenai/bush.git
+git clone -b McBush https://github.com/NilayShenai/bush.git
 cd bush
 go build -ldflags="-s -w" -o bush main.go
 ```
 
-To install system-wide:
+### macOS Quick Install
 
-```bash
-sudo cp bush /usr/local/bin/bush
-sudo chmod 755 /usr/local/bin/bush
-```
+1. Build and install to `/usr/local/bin` (or `/opt/homebrew/bin`):
+   ```bash
+   # Intel or Apple Silicon
+   sudo cp bush /usr/local/bin/bush
+   sudo chmod 755 /usr/local/bin/bush
+   ```
+
+2. Register Bush in `/etc/shells`:
+   ```bash
+   grep -qxF "/usr/local/bin/bush" /etc/shells || echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+   ```
+
+3. Set as default login shell:
+   ```bash
+   chsh -s /usr/local/bin/bush
+   ```
+
+4. Automatic macOS Homebrew integration:
+   Bush automatically detects and loads `/opt/homebrew/bin` and `/usr/local/bin` into `$PATH` on startup.
 
 ---
 

@@ -15,12 +15,13 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
 )
 
-const Version = "2.1.2"
+const Version = "2.1.2-mcbush"
 
 func main() {
 	cmdFlag := flag.String("c", "", "Execute command string and exit")
@@ -63,6 +64,23 @@ func main() {
 
 	if exePath, err := os.Executable(); err == nil {
 		os.Setenv("SHELL", exePath)
+	}
+
+	if runtime.GOOS == "darwin" {
+		curPath := os.Getenv("PATH")
+		var missing []string
+		for _, p := range []string{"/opt/homebrew/bin", "/opt/homebrew/sbin", "/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin"} {
+			if _, err := os.Stat(p); err == nil && !strings.Contains(curPath, p) {
+				missing = append(missing, p)
+			}
+		}
+		if len(missing) > 0 {
+			if curPath != "" {
+				os.Setenv("PATH", strings.Join(missing, ":")+":"+curPath)
+			} else {
+				os.Setenv("PATH", strings.Join(missing, ":"))
+			}
+		}
 	}
 
 	isLogin := *loginFlag || strings.HasPrefix(filepath.Base(os.Args[0]), "-")
