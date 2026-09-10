@@ -64,6 +64,15 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #32323e;
     }
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -113,7 +122,12 @@
       height: 54px;
       display: flex;
       align-items: center;
-      padding: 0 1.5rem;
+      padding: 0 1.25rem;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+      left: 0;
+      right: 0;
     }
 
     .nav-inner {
@@ -668,13 +682,45 @@
       line-height: 1.6;
     }
 
-    /* Code Box with Copy */
+    /* Text wrapping & Code */
+    p, h1, h2, h3, h4, span, a, .hero-summary, .docs-header p, .docs-section p, .doc-card-title, .doc-card-desc {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    code {
+      font-family: inherit;
+      font-size: 0.9em;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.15em 0.35em;
+      border-radius: 3px;
+      color: var(--mint);
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      color: inherit;
+      overflow-wrap: normal;
+      word-break: normal;
+      white-space: pre;
+    }
+
+    /* Code Box with Copy (Only code box scrolls horizontally) */
     .code-box {
       background: #0a0a0e;
       border: 1px solid var(--border);
       border-radius: 4px;
       margin: 1rem 0;
       position: relative;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .code-box pre {
@@ -684,6 +730,11 @@
       font-size: 12px;
       line-height: 1.6;
       color: #d1d5db;
+      white-space: pre;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
     }
 
     .code-copy-btn {
@@ -699,6 +750,7 @@
       border-radius: 3px;
       cursor: pointer;
       transition: all 0.15s;
+      z-index: 5;
     }
 
     .code-copy-btn:hover {
@@ -706,12 +758,69 @@
       border-color: var(--lavender);
     }
 
-    /* Tables */
-    .table-frame {
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow-x: auto;
-      margin: 1rem 0;
+    /* Tables: Single Layout Cards on Mobile (< 680px), Native Table on Desktop */
+    @media (max-width: 680px) {
+      .table-frame {
+        border: none;
+        margin: 0.8rem 0;
+        overflow-x: visible;
+        width: 100%;
+        max-width: 100%;
+      }
+      .table-frame table,
+      .table-frame thead,
+      .table-frame tbody,
+      .table-frame th,
+      .table-frame td,
+      .table-frame tr {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .table-frame thead {
+        display: none;
+      }
+      .table-frame tr {
+        margin-bottom: 0.75rem;
+        padding: 0.85rem 1rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+      }
+      .table-frame td {
+        padding: 0.2rem 0;
+        border: none;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      .table-frame td:first-child {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.15rem;
+      }
+      .table-frame td code {
+        color: var(--mint);
+        background: rgba(148, 226, 213, 0.08);
+      }
+      .table-frame td:last-child {
+        color: var(--text-muted);
+        font-size: 12px;
+        margin-top: 0.2rem;
+        line-height: 1.5;
+      }
+    }
+
+    @media (min-width: 681px) {
+      .table-frame {
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+        width: 100%;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
     }
 
     table {
@@ -745,6 +854,9 @@
       padding: 2rem 1.25rem;
       font-size: 12px;
       color: var(--text-dim);
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .footer-inner {
@@ -753,6 +865,8 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     @media (min-width: 600px) {
@@ -773,7 +887,7 @@
     }
 
     /* ==========================================================================
-       MOBILE GHOSTTY TWEAKS (< 768px)
+       MOBILE GHOSTTY SINGLE LAYOUT (< 768px)
        ========================================================================== */
     @media (max-width: 768px) {
       .desktop-nav-links {
@@ -782,36 +896,50 @@
 
       .mobile-menu-btn {
         display: block;
+        margin-left: auto;
       }
 
       .docs-layout {
-        flex-direction: column;
-        gap: 0;
+        display: block;
+        width: 100%;
+        max-width: 100%;
       }
 
       .docs-sidebar {
         display: none; /* Controlled cleanly via mobile drawer */
       }
 
+      .docs-content {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+      }
+
       #view-docs {
-        padding: 1.5rem 1.1rem 4rem 1.1rem;
+        padding: 1.5rem 1rem 4rem 1rem;
+        width: 100%;
+        max-width: 100%;
       }
 
       .docs-header h1 {
-        font-size: 1.85rem;
+        font-size: 1.75rem;
       }
 
       .docs-section h2 {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
       }
 
       #view-home {
-        padding: 2.2rem 1rem 4rem 1rem;
+        padding: 2rem 1rem 3.5rem 1rem;
+        width: 100%;
+        max-width: 100%;
       }
 
       .terminal-recreation {
         padding: 1.1rem 0.85rem;
         font-size: 11px;
+        width: 100%;
+        max-width: 100%;
       }
 
       .t-pill {
@@ -830,6 +958,17 @@
 
       .hero-btn {
         width: 100%;
+      }
+
+      .ghostty-btn-row {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .g-btn {
+        width: 100%;
+        max-width: 100%;
       }
     }
   </style>
@@ -1263,7 +1402,16 @@ suggest_binaries = true</code></pre>
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const navHeight = 60;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elRect = el.getBoundingClientRect().top;
+        const offsetPosition = elRect - bodyRect - navHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          left: 0,
+          behavior: 'smooth'
+        });
       }
     }, 20);
   }
