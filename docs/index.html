@@ -11,15 +11,14 @@
       --bg: #070708;
       --bg-surface: #0d0d12;
       --bg-card: #121218;
-      --bg-card-hover: #171720;
-      --border: #1f1f28;
+      --border: #1e1e26;
       --border-bright: #30303e;
       
       --text: #e2e2ec;
       --text-muted: #888898;
       --text-dim: #505060;
 
-      /* Refined Bush Palette */
+      /* Refined Pastel Palette */
       --lavender: #b4befe;
       --mauve: #cba6f7;
       --pink: #f5c2e7;
@@ -51,15 +50,15 @@
 
     /* Custom Dark Mode Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
       background: #070708;
     }
     ::-webkit-scrollbar-thumb {
       background: #20202a;
-      border-radius: 3px;
+      border-radius: 2px;
     }
     ::-webkit-scrollbar-thumb:hover {
       background: #323242;
@@ -90,7 +89,7 @@
       flex-direction: column;
     }
 
-    /* Analog Grain Texture */
+    /* Subtle Film Grain */
     .noise-overlay {
       position: fixed;
       top: 0;
@@ -103,7 +102,7 @@
       z-index: 999;
     }
 
-    /* Top Nav */
+    /* Top Nav (Clean on both mobile & desktop) */
     .top-nav {
       position: sticky;
       top: 0;
@@ -111,15 +110,15 @@
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       z-index: 100;
-      height: 56px;
+      height: 52px;
       display: flex;
       align-items: center;
-      padding: 0 1.5rem;
+      padding: 0 1.25rem;
     }
 
     .nav-inner {
       width: 100%;
-      max-width: 1140px;
+      max-width: 1100px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -129,7 +128,7 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       font-size: 15px;
       font-weight: 700;
       color: #ffffff;
@@ -142,15 +141,15 @@
       color: var(--lavender);
       background: rgba(180, 190, 254, 0.1);
       border: 1px solid rgba(180, 190, 254, 0.25);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 2px;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 1.2rem;
-      font-size: 13px;
+      gap: 1.1rem;
+      font-size: 12.5px;
     }
 
     .nav-link {
@@ -161,29 +160,10 @@
       background: none;
       border: none;
       font-family: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
     }
 
     .nav-link:hover, .nav-link.active {
-      color: #ffffff;
-    }
-
-    .nav-copy-btn {
-      border: 1px solid var(--border-bright);
-      background: rgba(180, 190, 254, 0.05);
-      color: var(--lavender);
-      font-family: inherit;
-      padding: 0.35rem 0.85rem;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      transition: all 0.15s ease;
-      cursor: pointer;
-    }
-
-    .nav-copy-btn:hover {
-      border-color: var(--lavender);
-      background: rgba(180, 190, 254, 0.15);
       color: #ffffff;
     }
 
@@ -193,67 +173,67 @@
     }
 
     /* ==========================================================================
-       VIEW 1: HOME VIEW
+       VIEW 1: HOME LANDING
        ========================================================================== */
     #view-home {
-      max-width: 860px;
+      max-width: 820px;
       margin: 0 auto;
-      padding: 3.5rem 1.5rem 6rem 1.5rem;
+      padding: 3rem 1.25rem 5rem 1.25rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
 
-    /* PURE HTML/CSS BUSH TERMINAL RECREATION */
+    /* PURE HTML / CSS TERMINAL RECREATION */
     .terminal-recreation {
       width: 100%;
-      max-width: 760px;
       background: #09090c;
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 1.6rem 1.4rem;
+      padding: 1.5rem 1.25rem;
       text-align: left;
       margin-bottom: 2rem;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-      overflow-x: auto;
+      font-size: clamp(11.5px, 2.9vw, 13px);
+      line-height: 1.6;
     }
 
     .t-capsules {
       display: flex;
       flex-wrap: wrap;
       gap: 0;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
       line-height: 1;
     }
 
     .t-pill {
       display: inline-block;
-      padding: 3px 10px;
-      font-size: 12.5px;
+      padding: 3px 9px;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.02em;
     }
 
     .t-pill-bush {
-      background: #2a2a3c;
+      background: #28283a;
       color: var(--lavender);
       border-top-left-radius: 3px;
       border-bottom-left-radius: 3px;
     }
 
     .t-pill-user {
-      background: #3d2d24;
+      background: #392b23;
       color: var(--peach);
     }
 
     .t-pill-dir {
-      background: #1e3332;
+      background: #1c302f;
       color: var(--mint);
     }
 
     .t-pill-ok {
-      background: #213829;
+      background: #1e3325;
       color: var(--green);
       border-top-right-radius: 3px;
       border-bottom-right-radius: 3px;
@@ -262,15 +242,14 @@
     .t-cmd-line {
       display: flex;
       align-items: center;
-      gap: 0.55rem;
-      margin-bottom: 1rem;
-      font-size: 14px;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
     }
 
     .t-arrow {
       color: var(--mauve);
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .t-input {
@@ -278,23 +257,39 @@
       font-weight: 700;
     }
 
-    .t-about-box {
+    /* Responsive About Card Frame (Never overflows or wraps brokenly) */
+    .t-about-frame {
+      border: 1px dashed var(--lavender);
+      border-radius: 3px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+      margin: 0.6rem 0 1rem 0;
+      background: rgba(180, 190, 254, 0.02);
+    }
+
+    .t-about-title {
       color: var(--lavender);
-      font-size: 12px;
-      line-height: 1.45;
-      margin-bottom: 1.1rem;
-      white-space: pre;
+      font-weight: 700;
+      font-size: clamp(11.5px, 3.2vw, 13px);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25rem;
+    }
+
+    .t-about-sub {
+      color: var(--mauve);
+      font-size: clamp(10.5px, 2.7vw, 12px);
+      letter-spacing: 0.05em;
     }
 
     .t-motto {
       color: var(--pink);
       font-style: italic;
-      margin-left: 1.2rem;
+      margin-left: 0.6rem;
+      font-size: clamp(11.5px, 2.9vw, 13px);
     }
 
     .t-meta {
-      margin: 0.8rem 0 0.8rem 1.2rem;
-      font-size: 12.5px;
+      margin: 0.8rem 0 0.8rem 0.6rem;
       line-height: 1.6;
     }
 
@@ -305,16 +300,15 @@
     .t-highlight-pink { color: var(--pink); font-weight: 700; }
 
     .t-dedication {
-      margin: 0.8rem 0 1.2rem 1.2rem;
-      color: #d8dee9;
-      font-size: 12px;
+      margin: 0.8rem 0 1.2rem 0.6rem;
+      color: #d1d5db;
       line-height: 1.6;
     }
 
     .t-cursor {
       display: inline-block;
-      width: 8px;
-      height: 15px;
+      width: 7px;
+      height: 14px;
       background: #ffffff;
       vertical-align: middle;
       animation: cursorBlink 1s step-end infinite;
@@ -328,82 +322,35 @@
     .hero-summary {
       color: var(--text-muted);
       font-size: 13.5px;
-      max-width: 680px;
+      max-width: 660px;
       line-height: 1.65;
       margin-bottom: 2rem;
     }
 
-    /* Single Copy Command Box */
-    .single-install-box {
-      width: 100%;
-      max-width: 680px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.65rem 1rem;
+    .hero-actions {
       display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin-bottom: 1.8rem;
+      gap: 1rem;
+      justify-content: center;
     }
 
-    @media (min-width: 640px) {
-      .single-install-box {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-
-    .install-snippet {
-      font-size: 12.5px;
-      color: var(--text);
-      overflow-x: auto;
-      white-space: nowrap;
-      text-align: left;
-    }
-
-    .install-snippet span {
-      color: var(--cyan);
-    }
-
-    .snippet-copy-btn {
-      background: #181822;
+    .hero-btn {
       border: 1px solid var(--border-bright);
-      color: var(--lavender);
-      font-family: inherit;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 0.4rem 0.85rem;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .snippet-copy-btn:hover {
-      background: var(--lavender);
-      color: #000000;
-      border-color: var(--lavender);
-    }
-
-    .hero-btn-docs {
-      border: 1px solid var(--border-bright);
-      background: transparent;
+      background: rgba(180, 190, 254, 0.05);
       color: #ffffff;
       font-family: inherit;
       font-size: 13px;
       font-weight: 700;
-      padding: 0.6rem 2rem;
+      padding: 0.65rem 1.8rem;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.15s ease;
+      text-decoration: none;
     }
 
-    .hero-btn-docs:hover {
+    .hero-btn:hover {
       border-color: var(--lavender);
       color: var(--lavender);
-      background: rgba(180, 190, 254, 0.05);
+      background: rgba(180, 190, 254, 0.1);
     }
 
     /* ==========================================================================
@@ -412,9 +359,9 @@
     #view-docs {
       display: none;
       width: 100%;
-      max-width: 1140px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem 6rem 1.5rem;
+      padding: 2rem 1.25rem 5rem 1.25rem;
     }
 
     .docs-layout {
@@ -425,33 +372,25 @@
 
     /* Sidebar Index */
     .docs-sidebar {
-      width: 230px;
+      width: 220px;
       flex-shrink: 0;
       position: sticky;
-      top: 75px;
+      top: 70px;
     }
 
-    /* Replaced blue button with subtle lavender dark card */
     .sidebar-btn {
       width: 100%;
       text-align: left;
-      background: #13131c;
+      background: #12121a;
       color: var(--lavender);
       border: 1px solid rgba(180, 190, 254, 0.25);
       font-family: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
-      padding: 0.55rem 0.85rem;
+      padding: 0.5rem 0.8rem;
       border-radius: 4px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .sidebar-btn:hover {
-      background: #191924;
-      border-color: var(--lavender);
-      color: #ffffff;
     }
 
     .sidebar-nav {
@@ -482,7 +421,7 @@
       border-left: 2px solid var(--lavender);
     }
 
-    /* Docs Content */
+    /* Docs Content Area */
     .docs-content {
       flex: 1;
       min-width: 0;
@@ -491,35 +430,35 @@
     .breadcrumb-link {
       font-size: 12px;
       color: var(--text-dim);
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
       text-decoration: underline;
       cursor: pointer;
       display: inline-block;
     }
 
     .docs-header h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       color: #ffffff;
     }
 
     .docs-header p {
       color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 2.5rem;
+      font-size: 13.5px;
+      margin-bottom: 2rem;
       line-height: 1.6;
     }
 
     .docs-section {
       border-top: 1px solid var(--border);
-      padding-top: 2.2rem;
-      margin-top: 2.5rem;
+      padding-top: 2rem;
+      margin-top: 2rem;
     }
 
     .docs-section h2 {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 700;
       margin-bottom: 0.6rem;
       color: #ffffff;
@@ -527,16 +466,16 @@
 
     .docs-section p {
       color: var(--text-muted);
-      font-size: 13.5px;
-      margin-bottom: 1.2rem;
+      font-size: 13px;
+      margin-bottom: 1rem;
     }
 
-    /* Featured Cards */
+    /* Featured Cards Grid */
     .docs-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-top: 1.2rem;
+      gap: 0.9rem;
+      margin-top: 1rem;
     }
 
     @media (min-width: 640px) {
@@ -549,28 +488,26 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 1.3rem;
-      transition: border-color 0.15s ease, background 0.15s ease;
-      text-decoration: none;
+      padding: 1.2rem;
+      transition: border-color 0.15s ease;
       display: block;
     }
 
     .doc-card:hover {
       border-color: var(--border-bright);
-      background: var(--bg-card);
     }
 
     .doc-card-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .doc-card-desc {
       font-size: 12px;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
     /* Code Box with Copy */
@@ -578,29 +515,29 @@
       background: #0b0b0f;
       border: 1px solid var(--border);
       border-radius: 4px;
-      margin: 1.2rem 0;
+      margin: 1rem 0;
       position: relative;
     }
 
     .code-box pre {
-      padding: 1rem 1.2rem;
+      padding: 0.9rem 1rem;
       overflow-x: auto;
       font-family: inherit;
-      font-size: 12.5px;
+      font-size: 12px;
       line-height: 1.6;
       color: #d1d5db;
     }
 
     .code-copy-btn {
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
+      top: 0.45rem;
+      right: 0.45rem;
       background: #171720;
       border: 1px solid var(--border-bright);
       color: var(--text-muted);
       font-family: inherit;
-      font-size: 11px;
-      padding: 0.2rem 0.55rem;
+      font-size: 10.5px;
+      padding: 0.2rem 0.5rem;
       border-radius: 3px;
       cursor: pointer;
       transition: color 0.15s, border-color 0.15s;
@@ -616,27 +553,27 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       overflow-x: auto;
-      margin: 1.2rem 0;
+      margin: 1rem 0;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12.5px;
+      font-size: 12px;
       text-align: left;
     }
 
     th {
       background: #111116;
       color: var(--peach);
-      padding: 0.75rem 1rem;
+      padding: 0.7rem 0.9rem;
       border-bottom: 1px solid var(--border);
       font-weight: 700;
     }
 
     td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #181820;
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid #16161e;
       color: var(--text-muted);
     }
 
@@ -647,17 +584,17 @@
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.25rem;
       font-size: 12px;
       color: var(--text-dim);
     }
 
     .footer-inner {
-      max-width: 1140px;
+      max-width: 1100px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.5rem;
     }
 
     @media (min-width: 600px) {
@@ -677,22 +614,80 @@
       color: var(--lavender);
     }
 
-    /* Responsive */
+    /* ==========================================================================
+       MOBILE RESPONSIVE TWEAKS (Fix phone UI)
+       ========================================================================== */
     @media (max-width: 768px) {
-      .docs-layout {
-        flex-direction: column;
-        gap: 1.5rem;
+      .top-nav {
+        padding: 0 1rem;
       }
-      .docs-sidebar {
-        width: 100%;
-        position: static;
+
+      .brand-tag {
+        display: none;
       }
+
+      .nav-links {
+        gap: 0.9rem;
+      }
+
+      #view-home {
+        padding: 2.2rem 1rem 4rem 1rem;
+      }
+
       .terminal-recreation {
-        padding: 1.2rem 0.9rem;
+        padding: 1.1rem 0.85rem;
+      }
+
+      .t-pill {
+        padding: 2px 7px;
         font-size: 11px;
       }
-      .t-about-box {
-        font-size: 10.5px;
+
+      .t-meta, .t-motto, .t-dedication {
+        margin-left: 0.2rem;
+      }
+
+      .docs-layout {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      /* Mobile Horizontal Scrollable Category Bar */
+      .docs-sidebar {
+        width: 100%;
+        position: sticky;
+        top: 52px;
+        background: rgba(7, 7, 8, 0.95);
+        backdrop-filter: blur(8px);
+        padding: 0.4rem 0;
+        z-index: 90;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-btn {
+        display: none;
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 0.4rem;
+        padding: 2px 0;
+      }
+
+      .sidebar-link {
+        padding: 0.3rem 0.65rem;
+        font-size: 11.5px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+      }
+
+      .sidebar-link.active {
+        border-color: var(--lavender);
+        background: rgba(180, 190, 254, 0.1);
+        border-left: 1px solid var(--lavender);
       }
     }
   </style>
@@ -712,7 +707,6 @@
       <button class="nav-link active" id="nav-home" onclick="navigateTo('home')">Home</button>
       <button class="nav-link" id="nav-docs" onclick="navigateTo('docs')">Docs</button>
       <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener" class="nav-link">GitHub ↗</a>
-      <button class="nav-copy-btn" onclick="copyInstallCmd(this)">Copy Install</button>
     </div>
   </div>
 </header>
@@ -737,11 +731,11 @@
         <span class="t-input">about</span>
       </div>
 
-      <!-- About ASCII Card -->
-      <div class="t-about-box">+-----------------------------------------------------------+
-|                    BUSH SHELL (bush)                      |
-|              FOR BUSH LOVERS, BY BUSH LOVERS              |
-+-----------------------------------------------------------+</div>
+      <!-- Responsive About Card Frame -->
+      <div class="t-about-frame">
+        <div class="t-about-title">BUSH SHELL (bush)</div>
+        <div class="t-about-sub">FOR BUSH LOVERS, BY BUSH LOVERS</div>
+      </div>
 
       <div class="t-motto">"A shell for people of refined taste."</div>
 
@@ -776,16 +770,10 @@
       Bush is a fast, lightweight Unix shell written in Go with integrated developer tooling, native frequency-recency directory jumping, command blast-radius safety, live differential output diffing, and truecolor pastel aesthetics.
     </p>
 
-    <!-- SINGLE COPY COMMAND OPTION (No double-download confusion) -->
-    <div class="single-install-box">
-      <div class="install-snippet">
-        git clone https://github.com/NilayShenai/bush.git &amp;&amp; <span>cd bush &amp;&amp; go build</span>
-      </div>
-      <button class="snippet-copy-btn" onclick="copyInstallCmd(this)">COPY COMMAND</button>
+    <!-- Clean Navigation Button -->
+    <div class="hero-actions">
+      <button class="hero-btn" onclick="navigateTo('docs')">Documentation</button>
     </div>
-
-    <!-- Documentation Button -->
-    <button class="hero-btn-docs" onclick="navigateTo('docs')">Documentation</button>
 
   </section>
 
@@ -793,7 +781,7 @@
   <section id="view-docs">
     <div class="docs-layout">
       
-      <!-- Left Sidebar Index -->
+      <!-- Sidebar Index (Horizontal Pills on Mobile, Sticky on Desktop) -->
       <aside class="docs-sidebar">
         <button class="sidebar-btn" onclick="jumpToSection('docs-overview')">Bush Docs</button>
         <nav class="sidebar-nav">
@@ -819,8 +807,8 @@
         </div>
 
         <div class="docs-section" id="docs-install">
-          <h2>Get Started</h2>
-          <p>Clone, compile with Go 1.19+, and launch. Zero configuration required:</p>
+          <h2>Installation</h2>
+          <p>Clone and build with Go 1.19+. Single binary output with zero external dependencies:</p>
 
           <div class="code-box">
             <button class="code-copy-btn" onclick="copySnippetText('git clone https://github.com/NilayShenai/bush.git && cd bush && go build -ldflags=\"-s -w\" -o bush main.go && ./bush', this)">copy</button>
@@ -841,14 +829,14 @@ chsh -s /usr/local/bin/bush</code></pre>
 
         <!-- Featured Documentation Cards -->
         <div class="docs-section" id="docs-features">
-          <h2>Featured Documentation</h2>
+          <h2>Developer Suite</h2>
 
           <div class="docs-grid">
             
             <div class="doc-card">
               <div class="doc-card-title">Frecency Jump (z)</div>
               <div class="doc-card-desc">
-                Built-in frequency-recency directory teleportation. Teleport anywhere with <code>z &lt;query&gt;</code> without external tools like zoxide.
+                Built-in frequency-recency directory teleportation. Jump anywhere with <code>z &lt;query&gt;</code> without external tools like zoxide.
               </div>
             </div>
 
@@ -1073,7 +1061,6 @@ suggest_binaries = true</code></pre>
     navHome.classList.remove('active');
     navDocs.classList.add('active');
 
-    // Update active class on sidebar links
     document.querySelectorAll('.sidebar-link').forEach(link => {
       if (link.getAttribute('href') === '#' + id) {
         link.classList.add('active');
@@ -1092,11 +1079,6 @@ suggest_binaries = true</code></pre>
     }, 20);
   }
 
-  function copyInstallCmd(btn) {
-    const cmd = 'git clone https://github.com/NilayShenai/bush.git && cd bush && go build -ldflags="-s -w" -o bush main.go';
-    copySnippetText(cmd, btn);
-  }
-
   function copySnippetText(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
       const orig = btn.innerText;
@@ -1111,7 +1093,6 @@ suggest_binaries = true</code></pre>
     });
   }
 
-  // Handle URL hash on initial page load
   window.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash.replace('#', '');
     if (hash === 'docs' || hash.startsWith('docs-')) {
