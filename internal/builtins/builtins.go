@@ -424,7 +424,7 @@ func builtinAbout(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("+-----------------------------------------------------------+", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, "  "+color.BoldColorize("\"A shell for people of refined taste.\"", color.PastelPink))
 	fmt.Fprintln(ctx.Stdout)
-	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      2.1.1 release", color.PastelMint))
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      2.1.2 release", color.PastelMint))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Engine:       Go POSIX", color.TextWhite))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Theme:        default", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Source:       https://github.com/NilayShenai/bush", color.PastelPeach))

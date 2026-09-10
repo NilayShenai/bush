@@ -44,17 +44,101 @@ func findProcessOnPort(port int) (*PortInfo, error) {
 				if pid > 0 {
 					return getPortInfoForPID(port, proto, pid), nil
 				}
-				return &PortInfo{
-					Port:    port,
-					Proto:   proto,
-					State:   "LISTEN",
-					Process: "system/unknown",
-				}, nil
+				return resolveKnownServiceOrProc(port, proto), nil
 			}
 		}
 	}
 
 	return nil, fmt.Errorf("no process found listening on port %d", port)
+}
+
+var knownPortDaemons = map[int][]string{
+	22:    {"sshd", "ssh"},
+	80:    {"nginx", "apache2", "httpd", "caddy", "lighttpd"},
+	443:   {"nginx", "apache2", "httpd", "caddy", "traefik"},
+	53:    {"systemd-resolved", "dnsmasq", "named", "unbound"},
+	631:   {"cupsd"},
+	5432:  {"postgres", "postgresql"},
+	3306:  {"mysqld", "mariadbd"},
+	6379:  {"redis-server", "redis"},
+	27017: {"mongod"},
+	111:   {"rpcbind"},
+	25:    {"postfix", "exim4", "sendmail", "master"},
+	5353:  {"avahi-daemon"},
+	1716:  {"kdeconnectd"},
+	8888:  {"jupyter-notebook", "jupyter-noteboo", "python", "python3"},
+	3000:  {"node", "bun", "deno", "ruby", "rails"},
+	8080:  {"java", "tomcat", "node", "python"},
+	5000:  {"python", "flask", "docker-proxy"},
+}
+
+func resolveKnownServiceOrProc(port int, proto string) *PortInfo {
+	candidates := knownPortDaemons[port]
+
+	serviceName := ""
+	if svcBytes, err := os.ReadFile("/etc/services"); err == nil {
+		lines := strings.Split(string(svcBytes), "\n")
+		portStr := fmt.Sprintf("%d/%s", port, strings.ToLower(proto))
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if strings.HasPrefix(line, "#") {
+				continue
+			}
+			fields := strings.Fields(line)
+			if len(fields) >= 2 && fields[1] == portStr {
+				serviceName = fields[0]
+				candidates = append(candidates, serviceName)
+				break
+			}
+		}
+	}
+
+	entries, err := os.ReadDir("/proc")
+	if err == nil {
+		for _, e := range entries {
+			if !e.IsDir() {
+				continue
+			}
+			pid, err := strconv.Atoi(e.Name())
+			if err != nil || pid <= 0 {
+				continue
+			}
+
+			commBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/comm", pid))
+			if err != nil {
+				continue
+			}
+			comm := strings.TrimSpace(string(commBytes))
+
+			for _, cand := range candidates {
+				if strings.EqualFold(comm, cand) {
+					return getPortInfoForPID(port, proto, pid)
+				}
+			}
+
+			cmdBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid))
+			if err == nil {
+				cmdStr := string(cmdBytes)
+				if strings.Contains(cmdStr, fmt.Sprintf(":%d", port)) ||
+					strings.Contains(cmdStr, fmt.Sprintf("-p %d", port)) ||
+					strings.Contains(cmdStr, fmt.Sprintf("--port %d", port)) {
+					return getPortInfoForPID(port, proto, pid)
+				}
+			}
+		}
+	}
+
+	procName := serviceName
+	if procName == "" {
+		procName = "system service"
+	}
+
+	return &PortInfo{
+		Port:    port,
+		Proto:   proto,
+		State:   "LISTEN",
+		Process: procName,
+	}
 }
 
 func extractPIDFromSS(line string) int {
@@ -125,10 +209,45 @@ func builtinPort(args []string, ctx *ShellContext) int {
 				if len(fields) >= 7 {
 					proc = fields[6]
 				}
-				fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %s\n",
+
+				cleanProc := proc
+				pidStr := ""
+				if strings.Contains(proc, "users:((") {
+					start := strings.Index(proc, "((\"")
+					if start != -1 {
+						rest := proc[start+3:]
+						end := strings.Index(rest, "\"")
+						if end != -1 {
+							cleanProc = rest[:end]
+						}
+					}
+					if pidIdx := strings.Index(proc, "pid="); pidIdx != -1 {
+						rest := proc[pidIdx+4:]
+						end := strings.IndexAny(rest, ",)")
+						if end != -1 {
+							pidStr = rest[:end]
+						}
+					}
+				}
+
+				if cleanProc == "" || cleanProc == "system/unknown" {
+					lastColon := strings.LastIndex(addr, ":")
+					if lastColon != -1 {
+						if pNum, err := strconv.Atoi(addr[lastColon+1:]); err == nil {
+							resolved := resolveKnownServiceOrProc(pNum, proto)
+							cleanProc = resolved.Process
+							if resolved.PID > 0 {
+								pidStr = strconv.Itoa(resolved.PID)
+							}
+						}
+					}
+				}
+
+				fmt.Fprintf(ctx.Stdout, "| %-6s %-20s %-10s %s\n",
 					color.Colorize(proto, pal.PromptSymbol),
 					color.Colorize(addr, pal.Directory),
-					color.Colorize(proc, pal.Flags),
+					color.Colorize(pidStr, pal.Flags),
+					color.Colorize(cleanProc, pal.Flags),
 				)
 				count++
 			}

@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-const Version = "2.1.1"
+const Version = "2.1.2"
 
 func main() {
 	cmdFlag := flag.String("c", "", "Execute command string and exit")
