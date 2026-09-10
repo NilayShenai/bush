@@ -8,41 +8,45 @@
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
     :root {
-      --bg: #070709;
-      --bg-surface: #0e0e12;
-      --bg-subtle: #14141a;
-      --border: #22222b;
-      --border-bright: #363644;
+      --bg: #070708;
+      --bg-surface: #0e0e11;
+      --bg-card: #131318;
+      --bg-card-hover: #181820;
+      --border: #202028;
+      --border-bright: #32323e;
       
-      --text-main: #f0f0f4;
-      --text-muted: #888896;
-      --text-dim: #505060;
+      --text: #e2e2ec;
+      --text-muted: #8a8a9a;
+      --text-dim: #525262;
 
-      /* High-contrast artistic accent palette */
-      --lime: #c6f135;
-      --cyan: #38bdf8;
-      --amber: #fbbf24;
-      --coral: #f43f5e;
-      --purple: #c084fc;
-      --teal: #2dd4bf;
+      /* Pastel palette */
+      --lavender: #b4befe;
+      --mauve: #cba6f7;
+      --pink: #f5c2e7;
+      --peach: #fab387;
+      --mint: #94e2d5;
+      --green: #a6e3a1;
+      --yellow: #f9e2af;
+      --red: #f38ba8;
+      --blue: #38bdf8;
     }
 
     /* Custom Selection Styling */
     ::selection {
-      background: var(--lime);
-      color: #000000;
+      background: var(--pink);
+      color: #070708;
     }
     ::-moz-selection {
-      background: var(--lime);
-      color: #000000;
+      background: var(--pink);
+      color: #070708;
     }
     h1::selection, h2::selection, h3::selection {
-      background: var(--amber);
-      color: #000000;
+      background: var(--peach);
+      color: #070708;
     }
-    pre ::selection, code ::selection {
-      background: var(--cyan);
-      color: #000000;
+    code::selection, pre::selection {
+      background: var(--mint);
+      color: #070708;
     }
 
     /* Custom Dark Mode Scrollbar */
@@ -51,41 +55,42 @@
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #070709;
+      background: #070708;
     }
     ::-webkit-scrollbar-thumb {
-      background: #252530;
-      border-radius: 2px;
+      background: #22222c;
+      border-radius: 3px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #3a3a4c;
+      background: #343444;
     }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       scrollbar-width: thin;
-      scrollbar-color: #252530 #070709;
+      scrollbar-color: #22222c #070708;
     }
 
     body {
       background-color: var(--bg);
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 60%),
-        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-      background-size: 100% 100%, 28px 28px;
+        radial-gradient(circle at 50% 0%, rgba(180, 190, 254, 0.03) 0%, transparent 60%),
+        radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px;
       background-attachment: fixed;
-      color: var(--text-main);
+      color: var(--text);
       font-family: 'Space Mono', monospace;
       font-size: 13.5px;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      padding-bottom: 6rem;
-      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Subtle Film Grain Noise Overlay */
+    /* Analog Grain Texture */
     .noise-overlay {
       position: fixed;
       top: 0;
@@ -93,356 +98,524 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       z-index: 999;
     }
 
-    .container {
-      max-width: 920px;
+    /* Top Navigation (Ghostty style) */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(7, 7, 8, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    /* Masthead */
-    .masthead {
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1.5rem;
-      margin-bottom: 2.5rem;
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    @media (min-width: 640px) {
-      .masthead {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-
-    .masthead-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      margin-left: 1.2rem;
-      transition: color 0.15s;
-    }
-
-    .masthead-links a:hover {
-      color: var(--lime);
-    }
-
-    /* Hero Section */
-    .hero {
-      margin-bottom: 3.5rem;
-    }
-
-    .hero-label {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--lime);
-      margin-bottom: 0.8rem;
-    }
-
-    .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.04em;
-      color: #ffffff;
-      margin-bottom: 0.8rem;
-    }
-
-    .hero-tagline {
-      font-size: 16px;
-      color: var(--amber);
-      font-style: italic;
-      margin-bottom: 1.2rem;
-    }
-
-    .hero-lead {
-      color: var(--text-muted);
-      font-size: 14px;
-      max-width: 760px;
-      line-height: 1.7;
-    }
-
-    /* Quick Install Command Box */
-    .install-bar {
-      margin-top: 1.8rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--lime);
-      padding: 0.85rem 1.2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    @media (min-width: 640px) {
-      .install-bar {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-
-    .install-cmd {
-      font-size: 13px;
-      color: var(--text-main);
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    .install-cmd span {
-      color: var(--cyan);
-    }
-
-    .action-btn {
-      background: #181822;
-      border: 1px solid var(--border);
-      color: var(--lime);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 0.45rem 0.9rem;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .action-btn:hover {
-      background: var(--lime);
-      color: #000000;
-      border-color: var(--lime);
-    }
-
-    /* Interactive Terminal Simulator */
-    .console-frame {
-      background: #09090d;
-      border: 1px solid var(--border);
-      margin: 3rem 0;
-      position: relative;
-    }
-
-    .console-topbar {
-      background: #101017;
-      border-bottom: 1px solid var(--border);
-      padding: 0.6rem 1rem;
-      display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 11px;
     }
 
-    .console-title {
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-
-    .console-tabs {
+    .brand {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: 'Space Mono', monospace;
-      font-size: 10.5px;
-      padding: 0.25rem 0.6rem;
-      cursor: pointer;
-      transition: all 0.12s ease;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-main);
-      border-color: var(--border-bright);
-    }
-
-    .tab-btn.active {
-      background: #191924;
-      color: var(--cyan);
-      border-color: var(--cyan);
-    }
-
-    .console-screen {
-      padding: 1.4rem;
-      min-height: 240px;
-      font-size: 12.5px;
-      line-height: 1.7;
-      overflow-x: auto;
-      color: #d8dee9;
-    }
-
-    .c-prompt { color: var(--lime); font-weight: 700; }
-    .c-dir { color: var(--cyan); }
-    .c-cmd { color: #ffffff; font-weight: 700; }
-    .c-err { color: var(--coral); }
-    .c-warn { color: var(--amber); }
-    .c-ok { color: var(--teal); }
-    .c-dim { color: var(--text-dim); }
-
-    .screenshot-view {
-      display: none;
-      width: 100%;
-    }
-
-    .screenshot-view img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Section Typography */
-    section {
-      margin: 4.5rem 0;
-      border-top: 1px solid var(--border);
-      padding-top: 2.5rem;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-index {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--lime);
-      letter-spacing: 0.05em;
-    }
-
-    h2 {
-      font-size: 1.5rem;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 15px;
       font-weight: 700;
       color: #ffffff;
+      text-decoration: none;
       letter-spacing: -0.02em;
+      cursor: pointer;
     }
 
-    h3 {
-      font-size: 1.1rem;
-      color: var(--cyan);
-      margin: 1.8rem 0 0.6rem 0;
+    .brand-tag {
+      font-size: 10px;
+      color: var(--lavender);
+      background: rgba(180, 190, 254, 0.1);
+      border: 1px solid rgba(180, 190, 254, 0.25);
+      padding: 1px 6px;
+      border-radius: 2px;
     }
 
-    p {
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      font-size: 13px;
+    }
+
+    .nav-link {
       color: var(--text-muted);
-      margin-bottom: 1.2rem;
-      font-size: 13.5px;
+      text-decoration: none;
+      transition: color 0.15s ease;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 13px;
     }
 
-    /* Asymmetric Engineering Grid */
-    .matrix {
+    .nav-link:hover, .nav-link.active {
+      color: #ffffff;
+    }
+
+    .nav-download-btn {
+      border: 1px solid var(--border-bright);
+      background: transparent;
+      color: #ffffff;
+      padding: 0.35rem 0.85rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 12.5px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .nav-download-btn:hover {
+      border-color: var(--lavender);
+      color: var(--lavender);
+      background: rgba(180, 190, 254, 0.05);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      width: 100%;
+    }
+
+    /* VIEW 1: HOME VIEW (Ghostty Landing Style) */
+    #view-home {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 6rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* PURE HTML/CSS BUSH TERMINAL RECREATION */
+    .terminal-recreation {
+      width: 100%;
+      max-width: 760px;
+      background: #09090c;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.8rem 1.6rem;
+      text-align: left;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      overflow-x: auto;
+    }
+
+    .t-capsules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 0.4rem;
+      line-height: 1;
+    }
+
+    .t-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .t-pill-bush {
+      background: #2a2a3c;
+      color: var(--lavender);
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+
+    .t-pill-user {
+      background: #3d2d24;
+      color: var(--peach);
+    }
+
+    .t-pill-dir {
+      background: #1e3332;
+      color: var(--mint);
+    }
+
+    .t-pill-ok {
+      background: #213829;
+      color: var(--green);
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
+    .t-cmd-line {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    .t-arrow {
+      color: var(--mauve);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .t-input {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .t-about-box {
+      color: var(--lavender);
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+      white-space: pre;
+    }
+
+    .t-motto {
+      color: var(--pink);
+      font-style: italic;
+      margin-left: 1.2rem;
+    }
+
+    .t-meta {
+      margin: 0.8rem 0 0.8rem 1.2rem;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .t-label-mint { color: var(--mint); }
+    .t-label-white { color: #ffffff; }
+    .t-label-lav { color: var(--lavender); }
+    .t-label-peach { color: var(--peach); }
+    .t-highlight-pink { color: var(--pink); font-weight: 700; }
+
+    .t-dedication {
+      margin: 0.8rem 0 1.2rem 1.2rem;
+      color: #d8dee9;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .t-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: #ffffff;
+      vertical-align: middle;
+      animation: cursorBlink 1s step-end infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Hero Text & Buttons (Ghostty style) */
+    .hero-summary {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 680px;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn-main {
+      border: 1px solid var(--border-bright);
+      background: var(--bg-surface);
+      color: #ffffff;
+      font-family: 'Space Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 0.65rem 1.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-main:hover {
+      border-color: var(--lavender);
+      color: var(--lavender);
+      background: rgba(180, 190, 254, 0.05);
+    }
+
+    .btn-primary {
+      border-color: rgba(180, 190, 254, 0.4);
+      background: rgba(180, 190, 254, 0.08);
+      color: var(--lavender);
+    }
+
+    .btn-primary:hover {
+      border-color: var(--lavender);
+      background: rgba(180, 190, 254, 0.16);
+      color: #ffffff;
+    }
+
+    /* VIEW 2: DOCS VIEW (Ghostty Docs Layout) */
+    #view-docs {
+      display: none;
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 6rem 1.5rem;
+    }
+
+    .docs-layout {
+      display: flex;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    /* Docs Sidebar */
+    .docs-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px;
+    }
+
+    .sidebar-btn {
+      width: 100%;
+      text-align: left;
+      background: #2563eb;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0.5rem 0.85rem;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 13px;
+    }
+
+    .sidebar-item {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .sidebar-item:hover {
+      color: #ffffff;
+      background: var(--bg-surface);
+    }
+
+    .sidebar-item.active {
+      color: #ffffff;
+      background: var(--bg-card);
+      font-weight: 700;
+    }
+
+    .sidebar-item span.chevron {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* Docs Content */
+    .docs-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 1.2rem;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .docs-header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .docs-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    .docs-section {
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      margin-top: 2.5rem;
+    }
+
+    .docs-section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: #ffffff;
+    }
+
+    .docs-section p {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    /* 2-Button Row in Docs */
+    .docs-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1.2rem 0 2.5rem 0;
+    }
+
+    .docs-action-btn {
+      flex: 1;
+      min-width: 180px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-bright);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0.65rem 1rem;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .docs-action-btn:hover {
+      border-color: var(--lavender);
+      color: var(--lavender);
+      background: rgba(180, 190, 254, 0.04);
+    }
+
+    .docs-action-btn.active {
+      border-color: rgba(180, 190, 254, 0.4);
+      background: rgba(180, 190, 254, 0.08);
+      color: var(--lavender);
+    }
+
+    /* Featured Documentation Grid (Ghostty style) */
+    .docs-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      margin: 1.8rem 0;
+      gap: 1rem;
+      margin-top: 1.2rem;
     }
 
-    @media (min-width: 680px) {
-      .matrix {
+    @media (min-width: 640px) {
+      .docs-grid {
         grid-template-columns: 1fr 1fr;
       }
     }
 
-    .matrix-cell {
-      background: var(--bg);
-      padding: 1.4rem;
-      transition: background 0.15s ease;
-    }
-
-    .matrix-cell:hover {
+    .doc-card {
       background: var(--bg-surface);
-    }
-
-    .matrix-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .matrix-pill {
-      font-size: 11px;
-      padding: 0.15rem 0.45rem;
       border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--amber);
+      border-radius: 5px;
+      padding: 1.4rem;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      text-decoration: none;
+      display: block;
     }
 
-    .matrix-desc {
+    .doc-card:hover {
+      border-color: var(--border-bright);
+      background: var(--bg-card);
+    }
+
+    .doc-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.45rem;
+    }
+
+    .doc-card-desc {
+      font-size: 12.5px;
       color: var(--text-muted);
-      font-size: 12px;
       line-height: 1.6;
     }
 
-    /* Technical Code Blocks */
+    /* Code Block with Copy */
     .code-box {
-      background: var(--bg-surface);
+      background: #0d0d12;
       border: 1px solid var(--border);
+      border-radius: 4px;
       margin: 1.2rem 0;
       position: relative;
     }
 
-    .code-box-header {
-      background: #121218;
-      border-bottom: 1px solid var(--border);
-      padding: 0.45rem 0.8rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    pre {
+    .code-box pre {
       padding: 1.1rem;
       overflow-x: auto;
-      font-family: 'Space Mono', monospace;
+      font-family: inherit;
       font-size: 12.5px;
-      line-height: 1.65;
+      line-height: 1.6;
       color: #d1d5db;
     }
 
-    code {
-      font-family: 'Space Mono', monospace;
+    .code-copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #181824;
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
     }
 
-    p code, td code {
-      background: #15151c;
-      border: 1px solid var(--border);
-      padding: 0.15rem 0.45rem;
-      color: var(--cyan);
-      font-size: 12px;
+    .code-copy-btn:hover {
+      color: var(--lavender);
+      border-color: var(--lavender);
     }
 
-    /* Matrix Table */
-    .table-container {
+    /* Tables */
+    .table-frame {
       border: 1px solid var(--border);
+      border-radius: 4px;
       overflow-x: auto;
-      margin: 1.5rem 0;
+      margin: 1.2rem 0;
     }
 
     table {
@@ -454,18 +627,15 @@
 
     th {
       background: #111116;
-      color: var(--lime);
+      color: var(--peach);
       padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--border);
       font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-size: 11px;
     }
 
     td {
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid #1a1a22;
+      border-bottom: 1px solid #1a1a24;
       color: var(--text-muted);
     }
 
@@ -473,25 +643,68 @@
       border-bottom: none;
     }
 
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.015);
-      color: var(--text-main);
+    /* Modal for Download/Build */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
     }
+
+    .modal-box {
+      background: #0d0d12;
+      border: 1px solid var(--border-bright);
+      border-radius: 6px;
+      max-width: 580px;
+      width: 100%;
+      padding: 1.8rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { color: #ffffff; }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
-      padding-top: 2rem;
-      margin-top: 5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      font-size: 11.5px;
+      padding: 2rem 1.5rem;
+      font-size: 12px;
       color: var(--text-dim);
     }
 
+    .footer-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
     @media (min-width: 600px) {
-      footer {
+      .footer-inner {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
@@ -499,13 +712,37 @@
     }
 
     footer a {
-      color: var(--cyan);
+      color: var(--text-muted);
       text-decoration: none;
     }
 
     footer a:hover {
-      color: var(--lime);
-      text-decoration: underline;
+      color: var(--lavender);
+    }
+
+    /* Responsive Mobile Breakpoint */
+    @media (max-width: 768px) {
+      .docs-layout {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .docs-sidebar {
+        width: 100%;
+        position: static;
+      }
+      .terminal-recreation {
+        padding: 1.2rem 1rem;
+        font-size: 11.5px;
+      }
+      .t-about-box {
+        font-size: 11px;
+      }
+      .hero-actions {
+        width: 100%;
+      }
+      .btn-main {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -513,243 +750,205 @@
 
 <div class="noise-overlay"></div>
 
-<div class="container">
-
-  <!-- Masthead -->
-  <div class="masthead">
-    <div>BUSH // GO POSIX CORE // RELEASE 2.1.1</div>
-    <div class="masthead-links">
-      <a href="#innovations">INNOVATIONS</a>
-      <a href="#posix">POSIX SPEC</a>
-      <a href="#config">CONFIG</a>
-      <a href="#manual">MANUAL</a>
-      <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">GITHUB</a>
+<!-- Top Navigation -->
+<header class="top-nav">
+  <div class="nav-inner">
+    <div class="brand" onclick="showView('home')">
+      <span>bush</span>
+      <span class="brand-tag">v2.1.1</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" id="nav-btn-home" onclick="showView('home')">Home</button>
+      <button class="nav-link" id="nav-btn-docs" onclick="showView('docs')">Docs</button>
+      <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener" class="nav-link">GitHub ↗</a>
+      <button class="nav-download-btn" onclick="openDownloadModal()">Download</button>
     </div>
   </div>
+</header>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <div class="hero-label">// UNIX COMMAND SHELL</div>
-    <h1>bush</h1>
-    <div class="hero-tagline">"A shell for people of refined taste."</div>
-    <p class="hero-lead">
-      Bush is a high-performance, single-binary Unix shell engineered in Go. Developed with zero external dependencies, it fuses POSIX compliance with an integrated developer engine: native frequency-recency directory teleportation, command blast-radius safety heuristics, live differential output diffing, and port diagnostics.
-    </p>
+<main>
 
-    <!-- Quick Install Command -->
-    <div class="install-bar">
-      <div class="install-cmd">
-        git clone https://github.com/NilayShenai/bush.git &amp;&amp; <span>cd bush &amp;&amp; go build</span>
-      </div>
-      <button class="action-btn" onclick="copySnippet('git clone https://github.com/NilayShenai/bush.git && cd bush && go build -ldflags=\"-s -w\" -o bush main.go', this)">
-        COPY INSTALL
-      </button>
-    </div>
-  </header>
-
-  <!-- Interactive Terminal Simulator -->
-  <div class="console-frame">
-    <div class="console-topbar">
-      <span class="console-title">// INTERACTIVE TERMINAL INSPECTOR</span>
-      <div class="console-tabs">
-        <button class="tab-btn active" onclick="switchTab('z', this)">[01] z</button>
-        <button class="tab-btn" onclick="switchTab('guard', this)">[02] guard</button>
-        <button class="tab-btn" onclick="switchTab('port', this)">[03] port</button>
-        <button class="tab-btn" onclick="switchTab('watch', this)">[04] watch</button>
-        <button class="tab-btn" onclick="switchTab('memo', this)">[05] memo</button>
-        <button class="tab-btn" onclick="switchTab('g', this)">[06] g</button>
-        <button class="tab-btn" onclick="switchTab('photo', this)">[07] preview.png</button>
-      </div>
-    </div>
-
-    <!-- Live Terminal Output Screen -->
-    <div id="consoleOutput" class="console-screen">
-<span class="c-prompt">bush  5CSEB2  ~/Documents  ok</span>
-<span class="c-cmd">&gt; z goo</span>
-<span class="c-dir">~/Documents/GooShell</span>
-
-<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; z</span>
-<span class="c-warn">+--- Frecency Jump (z) ------------------------------------+</span>
-|  1. ~/Documents/GooShell                       (score: 42.0, visits: 21)
-|  2. ~/Workspace/backend-api                    (score: 28.5, visits: 14)
-|  3. ~/Documents                                (score: 16.0, visits: 8)
-<span class="c-warn">+----------------------------------------------------------+</span>
-<span class="c-dim">Teleported via internal Frecency (Frequency * Recency) engine.</span>
-    </div>
-
-    <!-- Screenshot Fallback View -->
-    <div id="screenshotView" class="screenshot-view">
-      <img src="assets/preview.png" alt="Bush Shell Session Preview" onerror="this.src='../assets/preview.png'">
-    </div>
-  </div>
-
-  <!-- Section 01: Core Developer Innovations -->
-  <section id="innovations">
-    <div class="section-header">
-      <span class="section-index">[01]</span>
-      <h2>DEVELOPER SUITE &amp; INNOVATIONS</h2>
-    </div>
-    <p>
-      Eliminating the traditional clutter of external Python scripts, Rust binaries, and plugin managers, Bush packages critical engineering utilities directly into the shell binary:
-    </p>
-
-    <div class="matrix">
+  <!-- VIEW 1: HOME LANDING -->
+  <section id="view-home">
+    
+    <!-- PURE HTML / CSS TERMINAL RECREATION -->
+    <div class="terminal-recreation">
       
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>FRECENCY TELEPORTATION</span>
-          <span class="matrix-pill">z &lt;query&gt;</span>
-        </div>
-        <div class="matrix-desc">
-          Evaluates visited directories with an internal frequency-recency decay algorithm. Instantly jump across filesystems using partial substrings without third-party plugins.
-        </div>
+      <!-- Top Prompt Line -->
+      <div class="t-capsules">
+        <span class="t-pill t-pill-bush">bush</span>
+        <span class="t-pill t-pill-user">nilay</span>
+        <span class="t-pill t-pill-dir">~</span>
+        <span class="t-pill t-pill-ok">ok</span>
+      </div>
+      <div class="t-cmd-line">
+        <span class="t-arrow">❯</span>
+        <span class="t-input">about</span>
       </div>
 
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>BLAST RADIUS GUARD</span>
-          <span class="matrix-pill">[guard]</span>
-        </div>
-        <div class="matrix-desc">
-          Heuristic barrier intercepting high-blast commands (<code>rm -rf *</code>, <code>git reset --hard</code>, <code>git push -f</code>, <code>dd</code>). Scans target filesystem depth and prompts for verification.
-        </div>
+      <!-- About ASCII Card -->
+      <div class="t-about-box">+-----------------------------------------------------------+
+|                    BUSH SHELL (bush)                      |
+|              FOR BUSH LOVERS, BY BUSH LOVERS              |
++-----------------------------------------------------------+</div>
+
+      <div class="t-motto">"A shell for people of refined taste."</div>
+
+      <div class="t-meta">
+        <div><span class="t-label-mint">Version:      2.1.1 release</span></div>
+        <div><span class="t-label-white">Engine:       Go POSIX</span></div>
+        <div><span class="t-label-lav">Theme:        default</span></div>
+        <div><span class="t-label-peach">Source:       https://github.com/NilayShenai/bush</span></div>
       </div>
 
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>PORT DOCTOR &amp; TERMINATOR</span>
-          <span class="matrix-pill">port / killport</span>
-        </div>
-        <div class="matrix-desc">
-          Scan listening TCP/UDP ports, inspecting executable names, PID, and bound interfaces. Terminate offending processes to clear <code>EADDRINUSE</code> in a single command.
-        </div>
+      <div class="t-dedication">
+        Crafted for anyone who appreciates high performance, endless customizability,<br>
+        peak Unix shellcraft, and <span class="t-highlight-pink">the bush</span>. Bring it back.
       </div>
 
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>DIFFERENTIAL WATCHER</span>
-          <span class="matrix-pill">watch &lt;int&gt; &lt;cmd&gt;</span>
-        </div>
-        <div class="matrix-desc">
-          Continuous execution loop comparing output against previous runs line-by-line, highlighting mutated lines in high-visibility cyan and lime.
-        </div>
+      <!-- Bottom Active Prompt with Blinking Cursor -->
+      <div class="t-capsules">
+        <span class="t-pill t-pill-bush">bush</span>
+        <span class="t-pill t-pill-user">nilay</span>
+        <span class="t-pill t-pill-dir">~</span>
+        <span class="t-pill t-pill-ok">ok</span>
       </div>
-
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>PIPELINE OUTPUT MEMOIZER</span>
-          <span class="matrix-pill">memo &lt;cmd&gt;</span>
-        </div>
-        <div class="matrix-desc">
-          Buffers stdout in-memory. Replay output into subsequent pipes (<code>memo | jq .</code>) immediately without re-triggering expensive network requests.
-        </div>
-      </div>
-
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>SAFE ENVIRONMENT LOADER</span>
-          <span class="matrix-pill">envload</span>
-        </div>
-        <div class="matrix-desc">
-          Parse and export <code>.env</code> files directly into the active session with automatic masking of sensitive credentials (tokens, passwords, keys).
-        </div>
-      </div>
-
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>COMPACT GIT HUD</span>
-          <span class="matrix-pill">g</span>
-        </div>
-        <div class="matrix-desc">
-          Dense 3-line repository overview displaying branch tracking, staged/modified/untracked counters, and latest commit details.
-        </div>
-      </div>
-
-      <div class="matrix-cell">
-        <div class="matrix-title">
-          <span>COMMAND DOCTOR</span>
-          <span class="matrix-pill">why</span>
-        </div>
-        <div class="matrix-desc">
-          Examines non-zero exit statuses, differentiating between missing binaries, missing script interpreters, and typo distances.
-        </div>
+      <div class="t-cmd-line">
+        <span class="t-arrow">❯</span>
+        <span class="t-cursor"></span>
       </div>
 
     </div>
-  </section>
 
-  <!-- Section 02: POSIX Core & Architecture -->
-  <section id="posix">
-    <div class="section-header">
-      <span class="section-index">[02]</span>
-      <h2>POSIX SPECIFICATION &amp; RUNTIME</h2>
-    </div>
-    <p>
-      Bush implements standard Unix shell grammar through a handwritten recursive-descent parser and an AST pipeline executor:
+    <!-- Hero Summary & Action Buttons (Ghostty style) -->
+    <p class="hero-summary">
+      Bush is a fast, lightweight Unix shell written in Go with integrated developer tooling, native frequency-recency directory jumping, command blast-radius safety, live differential output diffing, and truecolor pastel aesthetics.
     </p>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>SUBSYSTEM</th>
-            <th>GRAMMAR / SYNTAX</th>
-            <th>BEHAVIOR</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Pipelines</td>
-            <td><code>cmd1 | cmd2 | cmd3</code></td>
-            <td>Concurrent process execution with connected OS pipe descriptors</td>
-          </tr>
-          <tr>
-            <td>Redirections</td>
-            <td><code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>2&gt;</code>, <code>2&gt;&amp;1</code>, <code>&amp;&gt;</code></td>
-            <td>Accurate stream redirection to filesystem paths and descriptors</td>
-          </tr>
-          <tr>
-            <td>Chaining</td>
-            <td><code>;</code>, <code>&amp;&amp;</code>, <code>||</code></td>
-            <td>Sequential, short-circuit conditional AND, and short-circuit OR</td>
-          </tr>
-          <tr>
-            <td>Job Control</td>
-            <td><code>&amp;</code>, <code>jobs</code>, <code>fg</code>, <code>bg</code></td>
-            <td>POSIX process group management with foreground TTY handover</td>
-          </tr>
-          <tr>
-            <td>Expansions</td>
-            <td><code>$VAR</code>, <code>${VAR}</code>, <code>$?</code>, <code>$$</code>, <code>~</code>, <code>$(cmd)</code></td>
-            <td>Tilde expansion, variable lookup, subshell command substitution</td>
-          </tr>
-          <tr>
-            <td>Privilege Sync</td>
-            <td><code>EUID == 0</code></td>
-            <td>Dynamic red-alert prompt bar and <code>[ root ]</code> capsule activation</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="hero-actions">
+      <button class="btn-main btn-primary" onclick="openDownloadModal()">Download</button>
+      <button class="btn-main" onclick="showView('docs')">Documentation</button>
     </div>
+
   </section>
 
-  <!-- Section 03: Configuration -->
-  <section id="config">
-    <div class="section-header">
-      <span class="section-index">[03]</span>
-      <h2>CONFIGURATION (config.toml)</h2>
-    </div>
-    <p>
-      Declarative settings are resolved from <code>~/.config/bush/config.toml</code> (with automatic fallback to <code>~/.bush.toml</code>). Reload settings live using <code>config reload</code>:
-    </p>
+  <!-- VIEW 2: DOCUMENTATION (Ghostty Docs Style) -->
+  <section id="view-docs">
+    <div class="docs-layout">
+      
+      <!-- Left Sidebar -->
+      <aside class="docs-sidebar">
+        <button class="sidebar-btn" onclick="scrollToId('docs-overview')">Bush Docs</button>
+        <div class="sidebar-nav">
+          <a class="sidebar-item active" onclick="scrollToId('docs-overview')">About Bush</a>
+          <a class="sidebar-item" onclick="scrollToId('docs-install')">Install <span class="chevron">▾</span></a>
+          <a class="sidebar-item" onclick="scrollToId('docs-config')">Configuration <span class="chevron">▾</span></a>
+          <a class="sidebar-item" onclick="scrollToId('docs-features')">Developer Suite <span class="chevron">▾</span></a>
+          <a class="sidebar-item" onclick="scrollToId('docs-posix')">POSIX Runtime <span class="chevron">▾</span></a>
+          <a class="sidebar-item" onclick="scrollToId('docs-keys')">Keybindings</a>
+        </div>
+      </aside>
 
-    <div class="code-box">
-      <div class="code-box-header">
-        <span>~/.config/bush/config.toml</span>
-        <button class="action-btn" onclick="copySnippet(document.getElementById('configContent').innerText, this)">COPY CONFIG</button>
-      </div>
-      <pre><code id="configContent">[shell]
+      <!-- Right Docs Content -->
+      <div class="docs-content">
+        
+        <div class="breadcrumb" onclick="showView('home')">Bush Docs</div>
+
+        <div class="docs-header" id="docs-overview">
+          <h1>Bush Docs</h1>
+          <p>
+            Bush is a fast, lightweight Unix shell written in Go with integrated developer tooling, zero external runtime dependencies, and truecolor pastel aesthetics.
+          </p>
+        </div>
+
+        <div class="docs-section" id="docs-install">
+          <h2>Get Started</h2>
+          <p>Install Bush and run. Zero configuration required to get up and running.</p>
+
+          <div class="docs-btn-row">
+            <button class="docs-action-btn active" onclick="openDownloadModal()">Download</button>
+            <button class="docs-action-btn" onclick="scrollToId('docs-build')">Build from Source</button>
+          </div>
+
+          <div id="docs-build">
+            <p><strong>Build from Source</strong> (requires Go 1.19+):</p>
+            <div class="code-box">
+              <button class="code-copy-btn" onclick="copyCode(this)">copy</button>
+              <pre><code>git clone https://github.com/NilayShenai/bush.git
+cd bush
+go build -ldflags="-s -w" -o bush main.go
+./bush</code></pre>
+            </div>
+
+            <p><strong>Set as Default Login Shell:</strong></p>
+            <div class="code-box">
+              <button class="code-copy-btn" onclick="copyCode(this)">copy</button>
+              <pre><code>sudo cp bush /usr/local/bin/bush
+echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+chsh -s /usr/local/bin/bush</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Documentation Grid (Ghostty style) -->
+        <div class="docs-section" id="docs-features">
+          <h2>Featured Documentation</h2>
+
+          <div class="docs-grid">
+            
+            <div class="doc-card">
+              <div class="doc-card-title">Frecency Jump (z)</div>
+              <div class="doc-card-desc">
+                Built-in frequency-recency directory teleportation. Teleport anywhere with <code>z &lt;query&gt;</code> without external tools like zoxide.
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Command Blast Radius Guard</div>
+              <div class="doc-card-desc">
+                Heuristic safety guard intercepting destructive commands (<code>rm -rf *</code>, <code>git reset --hard</code>, <code>git push -f</code>, <code>dd</code>).
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Port Doctor &amp; Killer</div>
+              <div class="doc-card-desc">
+                Inspect listening processes and release held ports (<code>port 3000</code> / <code>killport 3000</code>) to resolve EADDRINUSE in one command.
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Differential Live Watcher</div>
+              <div class="doc-card-desc">
+                Periodic command runner (<code>watch 1s "cat /proc/loadavg"</code>) with real-time diff highlighting of changed lines.
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Safe Environment Loader</div>
+              <div class="doc-card-desc">
+                Load <code>.env</code> files directly with <code>envload</code>, featuring automatic masking of tokens, passwords, and secret keys.
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Pipeline Output Memoizer</div>
+              <div class="doc-card-desc">
+                Cache expensive command outputs in memory with <code>memo &lt;cmd&gt;</code> and replay instantly without re-fetching network queries.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="docs-section" id="docs-config">
+          <h2>Configuration</h2>
+          <p>Bush is configured through TOML in <code>~/.config/bush/config.toml</code>:</p>
+
+          <div class="code-box">
+            <button class="code-copy-btn" onclick="copyCode(this)">copy</button>
+            <pre><code>[shell]
 greeting_banner = true
 motto = "A shell for people of refined taste."
 history_limit = 5000
@@ -762,10 +961,6 @@ file_threshold = 10
 multiline = true
 symbol = "❯ "
 badges = ["badge", "user", "dir", "git", "duration", "status"]
-max_dir_depth = 4
-duration_threshold_ms = 5
-show_git = true
-show_git_dirty = true
 
 [theme]
 name = "lavender" # "lavender", "nord", "tokyo_night", "rose_pine", "custom"
@@ -775,187 +970,204 @@ enabled = true
 suggest_history = true
 suggest_subcommands = true
 suggest_files = true
-suggest_binaries = true
+suggest_binaries = true</code></pre>
+          </div>
+        </div>
 
-[aliases]
-ll = "ls -la --color=auto"
-gs = "git status"
-gp = "git pull"</code></pre>
+        <!-- POSIX Engine -->
+        <div class="docs-section" id="docs-posix">
+          <h2>POSIX Engine &amp; Job Control</h2>
+          <p>Handwritten recursive-descent parser and AST pipeline execution layer:</p>
+
+          <div class="table-frame">
+            <table>
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Syntax</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pipelines</td>
+                  <td><code>cmd1 | cmd2 | cmd3</code></td>
+                  <td>Concurrent process pipes</td>
+                </tr>
+                <tr>
+                  <td>Redirection</td>
+                  <td><code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>2&gt;</code>, <code>2&gt;&amp;1</code></td>
+                  <td>Stream routing to files and descriptors</td>
+                </tr>
+                <tr>
+                  <td>Chaining</td>
+                  <td><code>;</code>, <code>&amp;&amp;</code>, <code>||</code></td>
+                  <td>Sequential and short-circuit operators</td>
+                </tr>
+                <tr>
+                  <td>Job Control</td>
+                  <td><code>&amp;</code>, <code>jobs</code>, <code>fg</code>, <code>bg</code></td>
+                  <td>POSIX process group backgrounding</td>
+                </tr>
+                <tr>
+                  <td>Expansions</td>
+                  <td><code>$VAR</code>, <code>~</code>, <code>$(cmd)</code></td>
+                  <td>Variables, tildes, and subshell substitution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Keybindings Section -->
+        <div class="docs-section" id="docs-keys">
+          <h2>Keybindings</h2>
+          <div class="table-frame">
+            <table>
+              <thead>
+                <tr>
+                  <th>Keybinding</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Tab</code></td>
+                  <td>Accept prediction or trigger context-aware completion</td>
+                </tr>
+                <tr>
+                  <td><code>Right Arrow</code></td>
+                  <td>Accept inline ghost autosuggestion</td>
+                </tr>
+                <tr>
+                  <td><code>Up / Down</code></td>
+                  <td>History search with prefix filtering</td>
+                </tr>
+                <tr>
+                  <td><code>Ctrl + R / Ctrl + P</code></td>
+                  <td>Interactive fuzzy command palette</td>
+                </tr>
+                <tr>
+                  <td><code>Ctrl + A / Ctrl + E</code></td>
+                  <td>Beginning / end of line</td>
+                </tr>
+                <tr>
+                  <td><code>Ctrl + U / Ctrl + K</code></td>
+                  <td>Kill text to start / end of line</td>
+                </tr>
+                <tr>
+                  <td><code>Ctrl + C</code></td>
+                  <td>Cancel current command line</td>
+                </tr>
+                <tr>
+                  <td><code>Ctrl + D</code></td>
+                  <td>Exit shell (on empty line)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- Section 04: Keyboard Matrix -->
-  <section id="manual">
-    <div class="section-header">
-      <span class="section-index">[04]</span>
-      <h2>KEYBOARD CONTROL MATRIX</h2>
-    </div>
+</main>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>TRIGGER</th>
-            <th>OPERATION</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>Tab</code></td>
-            <td>Apply inline prediction or trigger context-aware completion</td>
-          </tr>
-          <tr>
-            <td><code>Right Arrow</code></td>
-            <td>Accept full ghost autosuggestion</td>
-          </tr>
-          <tr>
-            <td><code>Alt + Right</code></td>
-            <td>Accept next token of autosuggestion</td>
-          </tr>
-          <tr>
-            <td><code>Up / Down</code></td>
-            <td>Navigate command history with prefix filtering</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + R / Ctrl + P</code></td>
-            <td>Launch fuzzy command palette popup</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + A / Ctrl + E</code></td>
-            <td>Jump cursor to line beginning / line end</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + U / Ctrl + K</code></td>
-            <td>Truncate text before / after cursor position</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + W</code></td>
-            <td>Erase preceding word</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + L</code></td>
-            <td>Repaint terminal canvas and redraw prompt</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + C</code></td>
-            <td>Abort current command line buffer</td>
-          </tr>
-          <tr>
-            <td><code>Ctrl + D</code></td>
-            <td>Exit shell session (when input line is empty)</td>
-          </tr>
-        </tbody>
-      </table>
+<!-- Download / Quick Install Modal -->
+<div class="modal-backdrop" id="downloadModal" onclick="closeDownloadModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">
+      <span>Install Bush Shell</span>
+      <button class="modal-close" onclick="closeDownloadModal()">✕</button>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div>BUSH // CRAFTED IN GO // LICENSED UNDER MIT</div>
-    <div>
-      <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">SOURCE REPOSITORY: github.com/NilayShenai/bush</a>
+    <p style="color: var(--text-muted); font-size: 13px; margin: 0.8rem 0;">
+      Compile directly from source with zero dependencies:
+    </p>
+    <div class="code-box">
+      <button class="code-copy-btn" onclick="copyCode(this)">copy</button>
+      <pre><code>git clone https://github.com/NilayShenai/bush.git
+cd bush
+go build -ldflags="-s -w" -o bush main.go
+sudo cp bush /usr/local/bin/bush</code></pre>
     </div>
-  </footer>
-
+    <p style="color: var(--text-dim); font-size: 11.5px; margin-top: 0.8rem;">
+      Compatible with Linux x86_64, ARM64, and BSD systems.
+    </p>
+  </div>
 </div>
 
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div>BUSH // CRAFTED IN GO // RELEASED UNDER MIT</div>
+    <div>
+      <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">github.com/NilayShenai/bush</a>
+    </div>
+  </div>
+</footer>
+
 <script>
-  const tabData = {
-    z: `<span class="c-prompt">bush  5CSEB2  ~/Documents  ok</span>
-<span class="c-cmd">&gt; z goo</span>
-<span class="c-dir">~/Documents/GooShell</span>
+  function showView(viewName) {
+    const homeView = document.getElementById('view-home');
+    const docsView = document.getElementById('view-docs');
+    const navBtnHome = document.getElementById('nav-btn-home');
+    const navBtnDocs = document.getElementById('nav-btn-docs');
 
-<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; z</span>
-<span class="c-warn">+--- Frecency Jump (z) ------------------------------------+</span>
-|  1. ~/Documents/GooShell                       (score: 42.0, visits: 21)
-|  2. ~/Workspace/backend-api                    (score: 28.5, visits: 14)
-|  3. ~/Documents                                (score: 16.0, visits: 8)
-<span class="c-warn">+----------------------------------------------------------+</span>
-<span class="c-dim">Teleported via internal Frecency (Frequency * Recency) engine.</span>`,
-
-    guard: `<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; rm -rf *</span>
-
-<span class="c-err">+--- [!] Blast Radius Guard -------------------------------+</span>
-| Command:  rm -rf *
-| Reason:   Target is root, wildcard, or home directory
-| Affected: 47 files
-| Target:   *
-<span class="c-err">+----------------------------------------------------------+</span>
-<span class="c-warn">Type 'yes' or press Enter to proceed, or 'no'/Esc to cancel: </span><span class="c-cmd">no</span>
-<span class="c-ok">Command aborted by Blast Radius Guard.</span>`,
-
-    port: `<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; port 3000</span>
-<span class="c-warn">+--- Port Doctor (3000) ------------------------------------+</span>
-| Port        : 3000
-| Protocol    : TCP
-| Status      : LISTEN
-| Process     : node (PID: 14205)
-| Command     : /usr/bin/node server.js
-<span class="c-warn">+----------------------------------------------------------+</span>
-
-<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; killport 3000</span>
-<span class="c-ok">ok</span> Released port <span class="c-dir">3000</span> (terminated node PID 14205)`,
-
-    watch: `<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; watch 1s "cat /proc/loadavg"</span>
-
-<span class="c-dir">Every 1s: cat /proc/loadavg   (press 'q' to quit)   08:45:12</span>
-------------------------------------------------------------
-<span class="c-warn">0.42 0.58 0.61 2/894 14521</span>   <span class="c-dim">&lt;-- highlighted mutated values in real-time</span>`,
-
-    memo: `<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; memo curl -s https://api.github.com/users/NilayShenai</span>
-{"login":"NilayShenai","id":70856655,"type":"User",...}
-
-<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; memo | grep -o '"id":[^,]*'</span>
-"id":70856655
-<span class="c-dim">[stdout replayed from in-memory cache with 0ms network latency]</span>`,
-
-    g: `<span class="c-prompt">bush  5CSEB2  ~/Documents/GooShell  ok</span>
-<span class="c-cmd">&gt; g</span>
-<span class="c-warn">+--- Git Status HUD ---------------------------------------+</span>
-| Branch : <span class="c-ok">main</span>
-| Staged : <span class="c-ok">0</span> | Modified : <span class="c-warn">0</span> | Untracked : <span class="c-dim">0</span>
-| Latest : <span class="c-dir">494d2a9</span> by Nilay D. Shenai (10m ago)
-|          "feat: release Bush v2.1.1 with developer suite"
-<span class="c-warn">+----------------------------------------------------------+</span>`
-  };
-
-  function switchTab(key, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const screen = document.getElementById('consoleOutput');
-    const screenshot = document.getElementById('screenshotView');
-
-    if (key === 'photo') {
-      screen.style.display = 'none';
-      screenshot.style.display = 'block';
+    if (viewName === 'docs') {
+      homeView.style.display = 'none';
+      docsView.style.display = 'block';
+      navBtnHome.classList.remove('active');
+      navBtnDocs.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      screenshot.style.display = 'none';
-      screen.style.display = 'block';
-      screen.innerHTML = tabData[key];
+      docsView.style.display = 'none';
+      homeView.style.display = 'flex';
+      navBtnDocs.classList.remove('active');
+      navBtnHome.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  function copySnippet(text, btn) {
-    navigator.clipboard.writeText(text).then(() => {
+  function scrollToId(id) {
+    showView('docs');
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+  }
+
+  function openDownloadModal() {
+    document.getElementById('downloadModal').style.display = 'flex';
+  }
+
+  function closeDownloadModal(e) {
+    document.getElementById('downloadModal').style.display = 'none';
+  }
+
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
       const orig = btn.innerText;
-      btn.innerText = 'COPIED';
-      btn.style.borderColor = 'var(--lime)';
-      btn.style.color = 'var(--lime)';
+      btn.innerText = 'copied!';
+      btn.style.color = 'var(--green)';
+      btn.style.borderColor = 'var(--green)';
       setTimeout(() => {
         btn.innerText = orig;
-        btn.style.borderColor = '';
         btn.style.color = '';
+        btn.style.borderColor = '';
       }, 1600);
     });
   }
+
+  // Handle escape key to close modal
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeDownloadModal();
+    }
+  });
 </script>
 
 </body>
