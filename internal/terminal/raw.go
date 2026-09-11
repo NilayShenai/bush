@@ -7,13 +7,6 @@ import (
 	"unsafe"
 )
 
-const (
-	tcgets  = 0x5401
-	tcsets  = 0x5402
-	tcsetsw = 0x5403
-	tcsetsf = 0x5404
-)
-
 var (
 	origTermios syscall.Termios
 	isRaw       bool
@@ -58,17 +51,7 @@ func MakeRaw(fd int) (*syscall.Termios, error) {
 	origTermios = termios
 
 	raw := termios
-
-	raw.Iflag &^= syscall.BRKINT | syscall.ICRNL | syscall.INPCK | syscall.ISTRIP | syscall.IXON
-
-	raw.Oflag &^= syscall.OPOST
-
-	raw.Cflag |= syscall.CS8
-
-	raw.Lflag &^= syscall.ECHO | syscall.ICANON | syscall.IEXTEN | syscall.ISIG
-
-	raw.Cc[syscall.VMIN] = 1
-	raw.Cc[syscall.VTIME] = 0
+	setRawTermios(&raw)
 
 	_, _, err = syscall.Syscall6(
 		syscall.SYS_IOCTL,
@@ -113,7 +96,7 @@ func GetSize(fd int) (int, int, error) {
 	_, _, err := syscall.Syscall6(
 		syscall.SYS_IOCTL,
 		uintptr(fd),
-		uintptr(syscall.TIOCGWINSZ),
+		uintptr(tiocgwinsz),
 		uintptr(unsafe.Pointer(&ws)),
 		0, 0, 0,
 	)

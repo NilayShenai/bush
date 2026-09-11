@@ -114,7 +114,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet; then
             git add index.html docs/index.html main.go install.sh Makefile scripts/build-releases.sh internal/builtins/builtins.go internal/builtins/unique.go internal/builtins/update.go
-            git commit -m "chore(release): bump version everywhere to ${TAG} [skip ci]"
+            git commit -m "timepass"
             git push origin HEAD:main || true
           fi
 

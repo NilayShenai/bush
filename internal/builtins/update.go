@@ -90,7 +90,7 @@ func builtinUpdate(args []string, ctx *ShellContext) int {
 	pal := color.ActivePalette
 	current := ctx.Version
 	if current == "" {
-		current = "2.8.1"
+		current = "2.8.2"
 	}
 
 	isCheckOnly := len(args) > 1 && args[1] == "check"

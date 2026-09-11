@@ -210,7 +210,15 @@ printf "  ${BOLD}%s${RESET} is now installed at ${BOLD}${MINT}%s${RESET}\n\n" "B
 
 if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
     warn "'${INSTALL_DIR}' is not currently in your \$PATH."
-    printf "Add it by running:\n"
+    if [ -f "$HOME/.bashrc" ] && ! grep -q "$INSTALL_DIR" "$HOME/.bashrc"; then
+        printf "\nexport PATH=\"%s:\$PATH\"\n" "$INSTALL_DIR" >> "$HOME/.bashrc"
+        info "Added '${INSTALL_DIR}' to ~/.bashrc"
+    fi
+    if [ -f "$HOME/.zshrc" ] && ! grep -q "$INSTALL_DIR" "$HOME/.zshrc"; then
+        printf "\nexport PATH=\"%s:\$PATH\"\n" "$INSTALL_DIR" >> "$HOME/.zshrc"
+        info "Added '${INSTALL_DIR}' to ~/.zshrc"
+    fi
+    printf "To use bush in your current terminal tab, run:\n"
     printf "${BOLD}export PATH=\"%s:\$PATH\"${RESET}\n\n" "$INSTALL_DIR"
 fi
 

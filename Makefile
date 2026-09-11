@@ -1,4 +1,4 @@
-VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "v2.8.1")
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "v2.8.2")
 LDFLAGS = -s -w -X main.Version=$(VERSION)
 DIST_DIR = dist
 

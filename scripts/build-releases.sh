@@ -8,7 +8,7 @@ set -e
 
 VERSION="${1:-${VERSION}}"
 if [ -z "$VERSION" ]; then
-    VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo "v2.8.1")
+    VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo "v2.8.2")
 fi
 
 case "$VERSION" in

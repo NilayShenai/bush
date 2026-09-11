@@ -68,24 +68,56 @@ sudo chmod 755 /usr/local/bin/bush
 
 Bush supports standard POSIX login shell flags (`-l`, `--login`, `-i`, `-s`, `-c`) and can serve as your primary login shell.
 
+### Linux
+
 1. Register Bush in `/etc/shells`:
    ```bash
    echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+   # Or if installed to ~/.local/bin:
+   # echo "$HOME/.local/bin/bush" | sudo tee -a /etc/shells
    ```
 
-2. Change your user login shell:
+2. Change your login shell:
    ```bash
    chsh -s /usr/local/bin/bush
+   # Or: chsh -s "$HOME/.local/bin/bush"
    ```
 
-3. Test without terminating your existing session:
+3. Launch Bush right now in your active terminal:
    ```bash
-   su - $USER
+   exec bush
+   ```
+   *Note: Log out of your desktop session and log back in so all new terminal windows open Bush automatically.*
+
+### macOS
+
+1. Register Bush in `/etc/shells` (mandatory on macOS):
+   ```bash
+   echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+   # Or if installed to ~/.local/bin:
+   # echo "$HOME/.local/bin/bush" | sudo tee -a /etc/shells
    ```
 
-To revert back to Bash at any time:
+2. Change your login shell:
+   ```bash
+   chsh -s /usr/local/bin/bush
+   # Or: chsh -s "$HOME/.local/bin/bush"
+   ```
+
+3. Open a new tab (`Cmd + T`) or window (`Cmd + N`) in Terminal.app or iTerm2. Bush starts immediately.
+
+**No-Sudo Alternative on macOS:**
+- In **Terminal.app**: Settings (`Cmd + ,`) -> General -> "Shells open with" -> select **Command (complete path)** and enter `/usr/local/bin/bush` (or `~/.local/bin/bush`).
+- In **iTerm2**: Preferences -> Profiles -> General -> Command -> enter `bush`.
+
+---
+
+### Reverting Back
+
+To revert back to Bash or Zsh at any time:
 ```bash
 chsh -s /bin/bash
+# On macOS: chsh -s /bin/zsh
 ```
 
 ---
