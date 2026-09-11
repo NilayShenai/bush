@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"io"
+	"unicode/utf8"
 )
 
 type KeyType int
@@ -38,12 +39,14 @@ const (
 	KeyAltLeft
 	KeyAltRight
 	KeyEscape
+	KeyPaste
 	KeyUnknown
 )
 
 type KeyEvent struct {
 	Type KeyType
 	Rune rune
+	Text string
 }
 
 func ReadKey(r io.Reader) (KeyEvent, error) {
@@ -173,6 +176,9 @@ func ReadKey(r io.Reader) (KeyEvent, error) {
 			}
 
 			if last == '~' {
+				if string(csi) == "200~" {
+					return readBracketedPaste(r)
+				}
 				first := csi[0]
 				switch first {
 				case '1', '7':
@@ -194,5 +200,58 @@ func ReadKey(r io.Reader) (KeyEvent, error) {
 		return KeyEvent{Type: KeyEscape}, nil
 	}
 
+	if b >= 0x80 {
+		var extra int
+		if b&0xE0 == 0xC0 {
+			extra = 1
+		} else if b&0xF0 == 0xE0 {
+			extra = 2
+		} else if b&0xF8 == 0xF0 {
+			extra = 3
+		}
+		if extra > 0 {
+			uBuf := make([]byte, 1+extra)
+			uBuf[0] = b
+			nExtra, errExtra := io.ReadFull(r, uBuf[1:])
+			if errExtra == nil && nExtra == extra {
+				rChar, _ := utf8.DecodeRune(uBuf)
+				if rChar != utf8.RuneError {
+					return KeyEvent{Type: KeyRune, Rune: rChar}, nil
+				}
+			}
+		}
+	}
+
 	return KeyEvent{Type: KeyRune, Rune: rune(b)}, nil
+}
+
+func readBracketedPaste(r io.Reader) (KeyEvent, error) {
+	var buf []byte
+	for {
+		var ch [1]byte
+		n, err := r.Read(ch[:])
+		if err != nil || n == 0 {
+			break
+		}
+		if ch[0] == 27 {
+			var tail [5]byte
+			nTail, errTail := io.ReadFull(r, tail[:])
+			if errTail == nil && string(tail[:nTail]) == "[201~" {
+				break
+			}
+			buf = append(buf, 27)
+			if nTail > 0 {
+				buf = append(buf, tail[:nTail]...)
+			}
+			if errTail != nil {
+				break
+			}
+		} else {
+			buf = append(buf, ch[0])
+		}
+	}
+	return KeyEvent{
+		Type: KeyPaste,
+		Text: string(buf),
+	}, nil
 }

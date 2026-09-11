@@ -1,6 +1,7 @@
 package lineeditor
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -74,5 +75,32 @@ func TestSliceEditingOperations(t *testing.T) {
 
 	if string(runes) != "" || cursorPos != 0 {
 		t.Fatalf("expected '' with cursor 0, got '%s' at %d", string(runes), cursorPos)
+	}
+}
+
+func TestPasteSanitization(t *testing.T) {
+	pasteText := "     chsh -s \"/home/MTECH/.local/bin/bush\"\n"
+	cursorPos := 0
+	runes := []rune{}
+
+	if cursorPos == 0 && len(runes) == 0 {
+		pasteText = strings.TrimLeft(pasteText, " \t")
+	}
+	pasteText = strings.TrimRight(pasteText, "\r\n")
+	pasteText = strings.ReplaceAll(pasteText, "\r\n", " ")
+	pasteText = strings.ReplaceAll(pasteText, "\n", " ")
+	pasteText = strings.ReplaceAll(pasteText, "\r", " ")
+
+	expected := "chsh -s \"/home/MTECH/.local/bin/bush\""
+	if pasteText != expected {
+		t.Fatalf("expected %q, got %q", expected, pasteText)
+	}
+
+	multi := "echo step 1\necho step 2\r\n"
+	multi = strings.TrimRight(multi, "\r\n")
+	multi = strings.ReplaceAll(multi, "\r\n", " ")
+	multi = strings.ReplaceAll(multi, "\n", " ")
+	if multi != "echo step 1 echo step 2" {
+		t.Fatalf("expected flattened multiline, got %q", multi)
 	}
 }

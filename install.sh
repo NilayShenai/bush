@@ -8,7 +8,7 @@ set -e
 # ==============================================================================
 
 REPO="NilayShenai/bush"
-DEFAULT_VERSION="v2.8.1"
+DEFAULT_VERSION="v2.8.2"
 
 # Color Codes (Bush Lavender/Pastel Palette)
 ESC="\033["
@@ -210,16 +210,17 @@ printf "  ${BOLD}%s${RESET} is now installed at ${BOLD}${MINT}%s${RESET}\n\n" "B
 
 if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
     warn "'${INSTALL_DIR}' is not currently in your \$PATH."
-    printf "  Add it by running: ${BOLD}export PATH=\"%s:\$PATH\"${RESET}\n\n" "$INSTALL_DIR"
+    printf "Add it by running:\n"
+    printf "${BOLD}export PATH=\"%s:\$PATH\"${RESET}\n\n" "$INSTALL_DIR"
 fi
 
-printf "${BOLD}${PEACH}Next Steps:${RESET}\n"
-printf "  1. Start Bush right now:\n"
-printf "     ${BOLD}${MINT}%s${RESET}\n\n" "$TARGET_PATH"
-printf "  2. Register Bush as a recognized login shell (optional):\n"
-printf "     ${BOLD}echo \"%s\" | sudo tee -a /etc/shells${RESET}\n" "$TARGET_PATH"
-printf "     ${BOLD}chsh -s \"%s\"${RESET}\n\n" "$TARGET_PATH"
-printf "  3. To configure themes, aliases, and prompts:\n"
-printf "     Type ${BOLD}${ACCENT}config${RESET} inside Bush or edit ${BOLD}~/.config/bush/config.toml${RESET}\n\n"
+printf "${BOLD}${PEACH}Next Steps:${RESET}\n\n"
+printf "1. Start Bush right now:\n"
+printf "${BOLD}${MINT}%s${RESET}\n\n" "$TARGET_PATH"
+printf "2. Register Bush as a recognized login shell (optional):\n"
+printf "${BOLD}echo \"%s\" | sudo tee -a /etc/shells${RESET}\n" "$TARGET_PATH"
+printf "${BOLD}chsh -s \"%s\"${RESET}\n\n" "$TARGET_PATH"
+printf "3. To configure themes, aliases, and prompts:\n"
+printf "Type ${BOLD}${ACCENT}config${RESET} inside Bush or edit ${BOLD}~/.config/bush/config.toml${RESET}\n\n"
 
 success "Installation complete! Enjoy Bush."

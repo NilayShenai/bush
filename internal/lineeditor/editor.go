@@ -42,6 +42,9 @@ func (le *LineEditor) ReadLine(promptState *prompt.State) (string, error) {
 	}
 	defer terminal.Restore(fd)
 
+	os.Stdout.WriteString("\033[?2004h")
+	defer os.Stdout.WriteString("\033[?2004l")
+
 	topPrompt, promptSym := prompt.Render(promptState)
 	os.Stdout.WriteString(topPrompt)
 	os.Stdout.WriteString("\r\n")
@@ -328,7 +331,31 @@ func (le *LineEditor) ReadLine(promptState *prompt.State) (string, error) {
 			os.Stdout.WriteString(promptSym)
 			renderLine()
 
+		case terminal.KeyPaste:
+			pasteText := key.Text
+			if cursorPos == 0 && len(runes) == 0 {
+				pasteText = strings.TrimLeft(pasteText, " \t")
+			}
+			pasteText = strings.TrimRight(pasteText, "\r\n")
+			pasteText = strings.ReplaceAll(pasteText, "\r\n", " ")
+			pasteText = strings.ReplaceAll(pasteText, "\n", " ")
+			pasteText = strings.ReplaceAll(pasteText, "\r", " ")
+
+			pasteRunes := []rune(pasteText)
+			if len(pasteRunes) > 0 {
+				newRunes := make([]rune, 0, len(runes)+len(pasteRunes))
+				newRunes = append(newRunes, runes[:cursorPos]...)
+				newRunes = append(newRunes, pasteRunes...)
+				newRunes = append(newRunes, runes[cursorPos:]...)
+				runes = newRunes
+				cursorPos += len(pasteRunes)
+			}
+			renderLine()
+
 		case terminal.KeyRune:
+			if cursorPos == 0 && len(runes) == 0 && (key.Rune == ' ' || key.Rune == '\t') {
+				continue
+			}
 			newRunes := make([]rune, 0, len(runes)+1)
 			newRunes = append(newRunes, runes[:cursorPos]...)
 			newRunes = append(newRunes, key.Rune)
