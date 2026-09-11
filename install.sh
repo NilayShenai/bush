@@ -8,7 +8,7 @@ set -e
 # ==============================================================================
 
 REPO="NilayShenai/bush"
-DEFAULT_VERSION="v2.8.2"
+DEFAULT_VERSION="v2.8.3"
 
 # Color Codes (Bush Lavender/Pastel Palette)
 ESC="\033["

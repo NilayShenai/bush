@@ -426,7 +426,7 @@ func builtinAbout(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, "  "+color.BoldColorize("\"A shell for people of refined taste.\"", color.PastelPink))
 	ver := ctx.Version
 	if ver == "" {
-		ver = "2.8.2"
+		ver = "2.8.3"
 	}
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      "+ver+" release", color.PastelMint))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Engine:       Go POSIX", color.TextWhite))

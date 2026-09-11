@@ -577,7 +577,7 @@ func builtinDashboard(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("|              FOR BUSH LOVERS, BY BUSH LOVERS                |", color.Mauve))
 	ver := ctx.Version
 	if ver == "" {
-		ver = "2.8.2"
+		ver = "2.8.3"
 	}
 	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Shell Version", color.PastelPeach), color.Colorize("Bush v"+ver+" release (Go "+runtime.Version()+")", color.TextWhite))
 	fmt.Fprintf(ctx.Stdout, "| %-18s: %s\n", color.Colorize("Uptime", color.PastelPeach), color.Colorize(uptime.String(), color.PastelMint))
