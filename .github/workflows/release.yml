@@ -1,0 +1,131 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v2.8.1)'
+        required: true
+        default: 'v2.8.1'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build and Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          check-latest: true
+
+      - name: Determine Release Tag
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build Binaries and Package Tarballs
+        run: |
+          set -e
+          TAG="${{ steps.vars.outputs.tag }}"
+          DIST_DIR="dist"
+          mkdir -p "$DIST_DIR"
+
+          # Targets: os arch [arm_version]
+          TARGETS=(
+            "linux amd64"
+            "linux arm64"
+            "linux arm 7"
+            "darwin amd64"
+            "darwin arm64"
+          )
+
+          for target in "${TARGETS[@]}"; do
+            read -r OS ARCH ARM_VER <<< "$target"
+            
+            LABEL_ARCH="$ARCH"
+            if [ "$ARCH" = "arm" ] && [ "$ARM_VER" = "7" ]; then
+              LABEL_ARCH="armv7"
+            fi
+
+            TARBALL_NAME="bush-${TAG}-${OS}-${LABEL_ARCH}.tar.gz"
+            BUILD_DIR="build-${OS}-${LABEL_ARCH}"
+            mkdir -p "$BUILD_DIR"
+
+            echo "==> Building for ${OS}/${LABEL_ARCH}..."
+            if [ -n "$ARM_VER" ]; then
+              CGO_ENABLED=0 GOOS="$OS" GOARCH="$ARCH" GOARM="$ARM_VER" \
+                go build -ldflags="-s -w -X main.Version=${TAG}" -o "${BUILD_DIR}/bush" main.go
+            else
+              CGO_ENABLED=0 GOOS="$OS" GOARCH="$ARCH" \
+                go build -ldflags="-s -w -X main.Version=${TAG}" -o "${BUILD_DIR}/bush" main.go
+            fi
+
+            cp README.md LICENSE "$BUILD_DIR/"
+            tar -czvf "${DIST_DIR}/${TARBALL_NAME}" -C "$BUILD_DIR" bush README.md LICENSE
+            rm -rf "$BUILD_DIR"
+          done
+
+          echo "==> Generating SHA256SUMS..."
+          cd "$DIST_DIR"
+          sha256sum bush-*.tar.gz > SHA256SUMS
+          cat SHA256SUMS
+          cd ..
+
+      - name: Auto-Update Version Text Everywhere in Repository
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+          CLEAN_VER="${TAG#v}"
+
+          echo "==> Bumping version everywhere to ${TAG} (${CLEAN_VER})..."
+
+          # Update HTML files (navbar badges & terminal cards)
+          sed -i -E "s|<span class=\"brand-tag\"[^>]*>[^<]*</span>|<span class=\"brand-tag\">${TAG}</span>|g" index.html docs/index.html
+          sed -i -E "s|Version:\s+[0-9]+\.[0-9]+\.[0-9]+ release|Version:      ${CLEAN_VER} release|g" index.html docs/index.html
+
+          # Update main.go
+          sed -i -E "s|var Version = \"[^\"]+\"|var Version = \"${CLEAN_VER}\"|g" main.go
+
+          # Update install.sh
+          sed -i -E "s|DEFAULT_VERSION=\"[^\"]+\"|DEFAULT_VERSION=\"${TAG}\"|g" install.sh
+
+          # Update internal builtins fallbacks
+          sed -i -E "s|ver = \"[0-9]+\.[0-9]+\.[0-9]+\"|ver = \"${CLEAN_VER}\"|g" internal/builtins/builtins.go internal/builtins/unique.go
+          sed -i -E "s|current = \"[0-9]+\.[0-9]+\.[0-9]+\"|current = \"${CLEAN_VER}\"|g" internal/builtins/update.go
+
+          # Update Makefile and build-releases script fallbacks
+          sed -i -E "s|echo \"v[0-9]+\.[0-9]+\.[0-9]+\"|echo \"${TAG}\"|g" Makefile scripts/build-releases.sh
+
+          # Commit all bumped files back to main
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add index.html docs/index.html main.go install.sh Makefile scripts/build-releases.sh internal/builtins/builtins.go internal/builtins/unique.go internal/builtins/update.go
+            git commit -m "chore(release): bump version everywhere to ${TAG} [skip ci]"
+            git push origin HEAD:main || true
+          fi
+
+      - name: Create GitHub Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: Bush ${{ steps.vars.outputs.tag }}
+          draft: false
+          prerelease: false
+          files: |
+            dist/bush-*.tar.gz
+            dist/SHA256SUMS
+          generate_release_notes: true

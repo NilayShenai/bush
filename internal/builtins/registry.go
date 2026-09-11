@@ -14,6 +14,7 @@ type ShellContext struct {
 	Stderr         io.Writer
 	LastExitCode   int
 	LastCommand    string
+	Version        string
 	StartTime      int64
 	CommandCount   int
 	CommandFreq    map[string]int

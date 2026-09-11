@@ -33,6 +33,7 @@ var subcommands = map[string][]string{
 	"memo":      {"clear", "info"},
 	"envload":   {".env", ".env.local", ".env.prod"},
 	"killport":  {"3000", "8080", "5000", "8000"},
+	"update":    {"check", "force"},
 }
 
 var fileCommands = map[string]bool{

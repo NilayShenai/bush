@@ -402,6 +402,7 @@ func builtinHelp(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("explain <cmd>", color.PastelPink)+"       Explains command syntax and flags")
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("calc <expr>", color.PastelPink)+"         Fast inline math expression evaluator e.g. calc (10+2)*5")
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("dashboard", color.PastelPink)+"           Pastel session HUD with system & shell telemetry")
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("update [check|force]", color.PastelPink)+"  Auto-update Bush directly from latest GitHub release")
 	fmt.Fprintln(ctx.Stdout)
 
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("KEYBOARD SHORTCUTS:", color.PastelYellow))
@@ -423,8 +424,11 @@ func builtinAbout(args []string, ctx *ShellContext) int {
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("|              FOR BUSH LOVERS, BY BUSH LOVERS              |", color.Mauve))
 	fmt.Fprintln(ctx.Stdout, color.BoldColorize("+-----------------------------------------------------------+", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, "  "+color.BoldColorize("\"A shell for people of refined taste.\"", color.PastelPink))
-	fmt.Fprintln(ctx.Stdout)
-	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      2.1.2 release", color.PastelMint))
+	ver := ctx.Version
+	if ver == "" {
+		ver = "2.8.1"
+	}
+	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Version:      "+ver+" release", color.PastelMint))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Engine:       Go POSIX", color.TextWhite))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Theme:        default", color.Lavender))
 	fmt.Fprintln(ctx.Stdout, "  "+color.Colorize("Source:       https://github.com/NilayShenai/bush", color.PastelPeach))

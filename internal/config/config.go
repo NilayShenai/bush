@@ -38,6 +38,7 @@ type ShellConfig struct {
 	GreetingBanner bool   `toml:"greeting_banner"`
 	Motto          string `toml:"motto"`
 	HistoryLimit   int    `toml:"history_limit"`
+	CheckUpdates   bool   `toml:"check_updates"`
 }
 
 type PromptConfig struct {
@@ -88,6 +89,7 @@ func DefaultConfig() *Config {
 			GreetingBanner: true,
 			Motto:          "A shell for people of refined taste.",
 			HistoryLimit:   5000,
+			CheckUpdates:   true,
 		},
 		Guard: GuardConfig{
 			Enabled:       true,

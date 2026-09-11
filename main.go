@@ -20,12 +20,14 @@ import (
 	"time"
 )
 
-const Version = "2.1.2"
+var Version = "2.8.1"
 
 func main() {
 	cmdFlag := flag.String("c", "", "Execute command string and exit")
 	versionFlag := flag.Bool("v", false, "Print Bush version")
 	flag.BoolVar(versionFlag, "version", false, "Print Bush version")
+	updateFlag := flag.Bool("u", false, "Check for updates and upgrade Bush")
+	flag.BoolVar(updateFlag, "update", false, "Check for updates and upgrade Bush")
 	loginFlag := flag.Bool("l", false, "Start as a login shell")
 	flag.BoolVar(loginFlag, "login", false, "Start as a login shell")
 	interactiveFlag := flag.Bool("i", false, "Force interactive shell")
@@ -37,7 +39,7 @@ func main() {
 	_ = interactiveFlag
 
 	if *helpFlag {
-		fmt.Printf("Usage: bush [-l|--login] [-i] [-s] [-c command] [-v|--version] [script.sh]\n")
+		fmt.Printf("Usage: bush [-l|--login] [-i] [-s] [-c command] [-u|--update] [-v|--version] [script.sh]\n")
 		os.Exit(0)
 	}
 
@@ -50,6 +52,7 @@ func main() {
 		Stdin:       os.Stdin,
 		Stdout:      os.Stdout,
 		Stderr:      os.Stderr,
+		Version:     Version,
 		StartTime:   time.Now().Unix(),
 		Aliases:     make(map[string]string),
 		Bookmarks:   builtins.LoadBookmarks(),
@@ -72,6 +75,17 @@ func main() {
 	}
 
 	config.LoadConfig(ctx)
+
+	if *updateFlag || (len(flag.Args()) > 0 && flag.Args()[0] == "update") {
+		updateArgs := []string{"update"}
+		if len(flag.Args()) > 1 && flag.Args()[0] == "update" {
+			updateArgs = append(updateArgs, flag.Args()[1:]...)
+		}
+		if fn, ok := builtins.GetBuiltin("update"); ok {
+			code := fn(updateArgs, ctx)
+			os.Exit(code)
+		}
+	}
 
 	if *cmdFlag != "" {
 		code := exec.RunString(*cmdFlag)
@@ -131,14 +145,20 @@ func printWelcomeBanner() {
 	fmt.Println(color.BoldColorize("|              FOR BUSH LOVERS, BY BUSH LOVERS                |", pal.PromptSymbol))
 	fmt.Println(color.BoldColorize("+-------------------------------------------------------------+", pal.Accent))
 	fmt.Println("  " + color.BoldColorize(fmt.Sprintf("\"%s\"", motto), pal.GitBranch))
-	fmt.Println()
+	if cfg.Shell.CheckUpdates {
+		if notice := builtins.CheckStartupUpdateNotice(Version); notice != "" {
+			fmt.Println(notice)
+			fmt.Println()
+		}
+	}
+
 	fmt.Println("  " + color.Colorize("Type", pal.GhostText) + " " +
 		color.BoldColorize("help", pal.Directory) + " " +
 		color.Colorize("for commands,", pal.GhostText) + " " +
 		color.BoldColorize("config", pal.Flags) + " " +
 		color.Colorize("to customize,", pal.GhostText) + " " +
-		color.BoldColorize("about", pal.Accent) + " " +
-		color.Colorize("for info,", pal.GhostText) + " " +
+		color.BoldColorize("update", pal.Success) + " " +
+		color.Colorize("to upgrade,", pal.GhostText) + " " +
 		color.BoldColorize("dashboard", pal.GitBranch) + " " +
 		color.Colorize("for session stats,", pal.GhostText) + " " +
 		color.BoldColorize("why", pal.Flags) + " " +

@@ -38,22 +38,26 @@ Bush implements these capabilities directly inside the shell engine:
 
 ## Installation
 
-### Prerequisites
+### Install Script
 
-- Go 1.19 or higher
-- Linux or Unix-like environment
+```bash
+curl -fsSL https://raw.githubusercontent.com/NilayShenai/bush/main/install.sh | bash
+```
 
 ### Build from Source
+
+Prerequisites: Go 1.19 or higher.
 
 ```bash
 git clone https://github.com/NilayShenai/bush.git
 cd bush
-go build -ldflags="-s -w" -o bush main.go
+make install
 ```
 
-To install system-wide:
+Or build manually:
 
 ```bash
+go build -ldflags="-s -w" -o bush main.go
 sudo cp bush /usr/local/bin/bush
 sudo chmod 755 /usr/local/bin/bush
 ```
@@ -105,6 +109,7 @@ Bush includes built-in commands designed to eliminate common daily workflow fric
 | Directory Bookmarks | `mark <tag>` / `jump <tag>` / `marks` | Persistent named directory bookmarks stored in `~/.bush_marks`. |
 | Math Evaluator | `calc '<expression>'` | Fast recursive-descent math parser (`calc 'sqrt(144) + 2^5'`). |
 | Session Telemetry | `dashboard` | Displays shell uptime, memory allocation, execution frequency, and working directory statistics. |
+| Auto-Updater | `update [check\|force]` | Checks GitHub for new releases and upgrades Bush directly in-place. Run `update check` to preview without installing. |
 | Smart Autosuggestions | `Right Arrow` / `Tab` | Predictive inline ghost text suggestions for executables, subcommands, arguments, and paths, functional even on a fresh install with zero history. |
 
 ---
@@ -237,12 +242,6 @@ BUSH = "1"
 - Zero Cgo: Compiled entirely as a static Go binary with pure Go standard library and direct POSIX kernel calls.
 - Memory Footprint: Standard resident set size under 5 MB.
 - Cold Startup Time: Under 2 milliseconds.
-
----
-
-## Source & Repository
-
-Repository: [https://github.com/NilayShenai/bush](https://github.com/NilayShenai/bush)
 
 ---
 

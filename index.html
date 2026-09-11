@@ -64,10 +64,15 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #32323e;
     }
-    html, body {
+    html {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
       width: 100%;
       max-width: 100vw;
-      overflow-x: hidden;
+      overflow-x: clip;
       margin: 0;
       padding: 0;
       position: relative;
@@ -488,6 +493,9 @@
       flex-shrink: 0;
       position: sticky;
       top: 75px;
+      align-self: flex-start;
+      height: fit-content;
+      overflow: visible;
     }
 
     .sidebar-btn {
@@ -982,7 +990,7 @@
   <div class="nav-inner">
     <a class="brand" onclick="navigateTo('home')">
       <span>bush</span>
-      <span class="brand-tag">v2.1.2</span>
+      <span class="brand-tag">v2.8.1</span>
     </a>
 
     <!-- Desktop Navigation Links -->
@@ -1047,7 +1055,7 @@
       <div class="t-motto">"A shell for people of refined taste."</div>
 
       <div class="t-meta">
-        <div><span class="t-label-mint">Version:      2.1.2 release</span></div>
+        <div><span class="t-label-mint" id="terminalVersion">Version:      2.8.1 release</span></div>
         <div><span class="t-label-white">Engine:       Go POSIX</span></div>
         <div><span class="t-label-lav">Theme:        default</span></div>
         <div><span class="t-label-peach">Source:       https://github.com/NilayShenai/bush</span></div>
@@ -1121,28 +1129,33 @@
           <h2>Get Started</h2>
           <p>Install Bush and run. Zero configuration required to get up and running.</p>
 
-          <h3>Installation Instructions</h3>
-          <p>Build directly from source for Linux, macOS, and BSD systems:</p>
+          <h3>Install Script</h3>
+          <p>Run the universal installer to download the precompiled binary for Linux and macOS:</p>
 
           <!-- Ghostty 2-Button Row -->
           <div class="ghostty-btn-row">
             <button class="g-btn g-btn-primary" onclick="copyInstallCmd(this)">Copy Install Command</button>
-            <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener" class="g-btn">Build from Source ↗</a>
+            <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener" class="g-btn">GitHub Repository ↗</a>
           </div>
 
           <div class="code-box">
-            <button class="code-copy-btn" onclick="copySnippetText('git clone https://github.com/NilayShenai/bush.git && cd bush && go build -ldflags=\"-s -w\" -o bush main.go && ./bush', this)">copy</button>
+            <button class="code-copy-btn" onclick="copySnippetText('curl -fsSL https://raw.githubusercontent.com/NilayShenai/bush/main/install.sh | bash', this)">copy</button>
+            <pre><code>curl -fsSL https://raw.githubusercontent.com/NilayShenai/bush/main/install.sh | bash</code></pre>
+          </div>
+
+          <h3>Build from Source</h3>
+          <p>Prerequisites: Go 1.19 or higher.</p>
+          <div class="code-box">
+            <button class="code-copy-btn" onclick="copySnippetText('git clone https://github.com/NilayShenai/bush.git && cd bush && make install', this)">copy</button>
             <pre><code>git clone https://github.com/NilayShenai/bush.git
 cd bush
-go build -ldflags="-s -w" -o bush main.go
-./bush</code></pre>
+make install</code></pre>
           </div>
 
           <p><strong>Set as Default Login Shell:</strong></p>
           <div class="code-box">
-            <button class="code-copy-btn" onclick="copySnippetText('sudo cp bush /usr/local/bin/bush && echo \"/usr/local/bin/bush\" | sudo tee -a /etc/shells && chsh -s /usr/local/bin/bush', this)">copy</button>
-            <pre><code>sudo cp bush /usr/local/bin/bush
-echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
+            <button class="code-copy-btn" onclick="copySnippetText('echo \"/usr/local/bin/bush\" | sudo tee -a /etc/shells && chsh -s /usr/local/bin/bush', this)">copy</button>
+            <pre><code>echo "/usr/local/bin/bush" | sudo tee -a /etc/shells
 chsh -s /usr/local/bin/bush</code></pre>
           </div>
         </div>
@@ -1194,6 +1207,13 @@ chsh -s /usr/local/bin/bush</code></pre>
               <div class="doc-card-title">Pipeline Output Memoizer</div>
               <div class="doc-card-desc">
                 Cache expensive command outputs in memory with <code>memo &lt;cmd&gt;</code> and replay instantly without re-fetching network queries.
+              </div>
+            </div>
+
+            <div class="doc-card">
+              <div class="doc-card-title">Auto-Updater (update)</div>
+              <div class="doc-card-desc">
+                Keep Bush up to date directly from GitHub releases with <code>update</code>. Check for new releases without installing via <code>update check</code>.
               </div>
             </div>
 
@@ -1342,7 +1362,7 @@ suggest_binaries = true</code></pre>
 <!-- Footer -->
 <footer>
   <div class="footer-inner">
-    <div>BUSH // CRAFTED IN GO // RELEASED UNDER MIT</div>
+    <div>BUSH - RELEASED UNDER MIT</div>
     <div>
       <a href="https://github.com/NilayShenai/bush" target="_blank" rel="noopener">github.com/NilayShenai/bush</a>
     </div>
@@ -1422,7 +1442,7 @@ suggest_binaries = true</code></pre>
   }
 
   function copyInstallCmd(btn) {
-    const cmd = 'git clone https://github.com/NilayShenai/bush.git && cd bush && go build -ldflags="-s -w" -o bush main.go';
+    const cmd = 'curl -fsSL https://raw.githubusercontent.com/NilayShenai/bush/main/install.sh | bash';
     copySnippetText(cmd, btn);
   }
 
@@ -1440,8 +1460,31 @@ suggest_binaries = true</code></pre>
     });
   }
 
+  function syncVersionFromGitHub() {
+    fetch('https://api.github.com/repos/NilayShenai/bush/releases/latest')
+      .then(res => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.tag_name) {
+          const tag = data.tag_name;
+          const cleanVer = tag.replace(/^v/, '');
+          document.querySelectorAll('.brand-tag').forEach(el => {
+            el.textContent = tag.startsWith('v') ? tag : 'v' + tag;
+          });
+          const termVer = document.getElementById('terminalVersion');
+          if (termVer) {
+            termVer.textContent = 'Version:      ' + cleanVer + ' release';
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
   // Handle URL hash on initial load
   window.addEventListener('DOMContentLoaded', () => {
+    syncVersionFromGitHub();
     const hash = window.location.hash.replace('#', '');
     if (hash === 'docs' || hash.startsWith('docs-')) {
       if (hash.startsWith('docs-')) {
